@@ -9,6 +9,7 @@ const summary = locale === 'es' ? page.summary : page.enSummary;
 const body = locale === 'es' ? page.body : page.enBody;
 const cards = page.cards || [];
 const workPath = locale === 'es' ? '/es/que-hacemos' : '/en/what-we-do';
+const isExternalHref = (href?: string) => /^https?:\/\//i.test(href || '');
 const localizeCardHref = (href?: string) => {
   if (!href) return undefined;
   if (/^https?:\/\//i.test(href) || locale === 'es') return href;
@@ -38,7 +39,7 @@ const formSuccess = locale === 'es' ? 'Consulta validada localmente. No se ha en
       {cards.map((card) => {
         const href = localizeCardHref(card.href);
         return href ? (
-          <a class="image-card" href={href}>
+          <a class="image-card" href={href} target={isExternalHref(href) ? '_blank' : undefined} rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}>
             {card.image && <img src={card.image} alt="" loading="lazy" width="800" height="600" />}
             <div><h3>{locale === 'es' ? card.title : card.enTitle}</h3><p>{locale === 'es' ? card.text : card.enText}</p><span class="text-link">{copy.readMore} ↗</span></div>
           </a>
