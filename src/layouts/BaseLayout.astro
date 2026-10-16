@@ -10,6 +10,7 @@ const origin = (import.meta.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');
 const canonical = origin && path ? `${origin}${path.startsWith('/') ? path : `/${path}`}` : undefined;
 const absoluteImage = /^https?:\/\//i.test(image) ? image : origin ? `${origin}${image.startsWith('/') ? image : `/${image}`}` : image;
 const copy = ui[locale];
+const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, inLanguage: locale, ...(canonical ? { url: canonical } : {}), isPartOf: { '@type': 'WebSite', name: 'Rainfer — informational reconstruction', ...(origin ? { url: origin } : {}) } };
 ---
 <!doctype html>
 <html lang={locale}>
@@ -24,6 +25,7 @@ const copy = ui[locale];
     <title>{title}</title>
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="image" href={image} fetchpriority="high" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={locale === 'es' ? 'es_ES' : 'en_GB'} />
@@ -33,10 +35,12 @@ const copy = ui[locale];
     {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={absoluteImage} />
     <meta property="og:image:alt" content={locale === 'es' ? 'Rainfer: rescate, cuidado y educación de primates' : 'Rainfer: primate rescue, care and education'} />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteImage} />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body>
     <a class="skip-link" href="#main">{copy.skip}</a>
