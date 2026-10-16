@@ -1,0 +1,47 @@
+---
+import type { Locale } from '../content/site';
+const { locale = 'es' } = Astro.props as { locale: Locale };
+const en = locale === 'en';
+const items = [
+  { category: 'care', number: '01', title: en ? 'Welfare before spectacle' : 'Bienestar antes que espectáculo', text: en ? 'Every story begins with the needs, dignity and individual history of the animal.' : 'Cada historia empieza por las necesidades, la dignidad y la historia individual del animal.', link: en ? '/en/what-we-do/rescue-and-rehabilitation' : '/es/que-hacemos/rescate-y-rehabilitacion', linkText: en ? 'Explore animal care' : 'Explorar el cuidado', symbol: '✳' },
+  { category: 'learn', number: '02', title: en ? 'Knowledge with context' : 'Conocimiento con contexto', text: en ? 'Clear, responsible education helps people understand primates beyond myths and headlines.' : 'La educación clara y responsable ayuda a comprender a los primates más allá de los mitos y los titulares.', link: en ? '/en/what-we-do/training-and-education' : '/es/que-hacemos/formacion-y-educacion', linkText: en ? 'Explore education' : 'Explorar educación', symbol: '↗' },
+  { category: 'act', number: '03', title: en ? 'Participation that respects' : 'Participación que respeta', text: en ? 'Support, volunteering and visits should always follow the sanctuary’s current official guidance.' : 'La ayuda, el voluntariado y las visitas deben seguir siempre las indicaciones oficiales vigentes del centro.', link: en ? '/en/support-us' : '/es/que-puedes-hacer-tu', linkText: en ? 'Find ways to help' : 'Descubrir cómo ayudar', symbol: '＋' },
+];
+---
+<section class="care-guide" aria-labelledby="care-guide-title" data-care-guide>
+  <div class="care-guide-intro">
+    <p class="kicker">{en ? 'A more thoughtful way forward' : 'Una forma más consciente de avanzar'}</p>
+    <h2 id="care-guide-title">{en ? 'Care is a practice, not a headline.' : 'Cuidar es una práctica, no un titular.'}</h2>
+    <p>{en ? 'Explore three connected ways to turn curiosity into informed, respectful action.' : 'Explora tres formas conectadas de convertir la curiosidad en acciones informadas y respetuosas.'}</p>
+    <div class="care-filter" role="group" aria-label={en ? 'Filter care principles' : 'Filtrar principios de cuidado'}>
+      <button type="button" data-care-filter="all" aria-pressed="true">{en ? 'All principles' : 'Todos'}</button>
+      <button type="button" data-care-filter="care" aria-pressed="false">{en ? 'Animal welfare' : 'Bienestar'}</button>
+      <button type="button" data-care-filter="learn" aria-pressed="false">{en ? 'Education' : 'Educación'}</button>
+      <button type="button" data-care-filter="act" aria-pressed="false">{en ? 'Take action' : 'Participar'}</button>
+    </div>
+    <p class="care-filter-status" data-care-status aria-live="polite">{en ? 'Showing all three principles.' : 'Mostrando los tres principios.'}</p>
+  </div>
+  <div class="care-guide-grid">
+    {items.map((item) => <article class="care-principle" data-care-item={item.category}>
+      <div class="care-principle-top"><span>{item.number} / 03</span><span aria-hidden="true">{item.symbol}</span></div>
+      <h3>{item.title}</h3><p>{item.text}</p>
+      <a href={item.link}>{item.linkText}<span aria-hidden="true"> ↗</span></a>
+    </article>)}
+  </div>
+</section>
+<script is:inline>
+  document.querySelectorAll('[data-care-guide]').forEach((root) => {
+    if (!(root instanceof HTMLElement)) return;
+    const buttons = Array.from(root.querySelectorAll('[data-care-filter]'));
+    const items = Array.from(root.querySelectorAll('[data-care-item]'));
+    const status = root.querySelector('[data-care-status]');
+    const english = document.documentElement.lang === 'en';
+    const labels = english ? { all: 'Showing all three principles.', care: 'Showing animal welfare.', learn: 'Showing education.', act: 'Showing ways to participate.' } : { all: 'Mostrando los tres principios.', care: 'Mostrando bienestar animal.', learn: 'Mostrando educación.', act: 'Mostrando formas de participar.' };
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      const filter = button.getAttribute('data-care-filter') || 'all';
+      buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+      items.forEach((item) => { item.hidden = filter !== 'all' && item.getAttribute('data-care-item') !== filter; });
+      if (status) status.textContent = labels[filter] || labels.all;
+    }));
+  });
+</script>
