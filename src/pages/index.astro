@@ -2,19 +2,80 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SearchPanel from '../components/SearchPanel.astro';
 import { pages } from '../content/site';
-const featured = pages.find((p) => p.path === 'que-hacemos');
-const species = pages.find((p) => p.path === 'los-primates-2');
+
+const featured = pages.find((page) => page.path === 'que-hacemos');
+const species = pages.find((page) => page.path === 'los-primates-2');
+const pillars = [
+  { number: '01', title: 'Rescate y recuperación', text: 'Un entorno de cuidado pensado alrededor de las necesidades de cada primate.', href: '/es/que-hacemos/rescate-y-rehabilitacion', image: '/assets/chimpanzee.jpg', alt: 'Chimpancé en un entorno de cuidado' },
+  { number: '02', title: 'Educación y conocimiento', text: 'Compartir conocimiento ayuda a construir una relación más respetuosa con los animales.', href: '/es/que-hacemos/formacion-y-educacion', image: '/assets/education.jpg', alt: 'Imagen relacionada con educación ambiental' },
+  { number: '03', title: 'Una mirada responsable', text: 'Conocer las diferencias entre especies es el primer paso para comprender sus necesidades.', href: '/es/los-primates-2', image: '/assets/gibbon.jpg', alt: 'Gibón en su entorno' },
+];
 ---
-<BaseLayout title="Rainfer — Rescate, bienestar y educación" description="Rainfer: un espacio de rescate, cuidado y aprendizaje dedicado a los primates." path="/">
-  <div class="home-shell">
-    <section class="home-hero">
-      <div class="hero-copy"><p class="kicker">Centro de rescate y recuperación</p><h1>Un lugar seguro.<br /><em>Una vida por delante.</em></h1><p class="lede">Rainfer trabaja para que el rescate de primates se convierta en cuidado, conocimiento y futuro.</p><div class="hero-actions"><a class="button button-light" href="/es/que-hacemos">Conocer el trabajo ↗</a><a class="quiet-link" href="/es/que-puedes-hacer-tu">Cómo ayudar</a></div></div>
-      <div class="hero-media"><img src="/assets/hero.jpg" alt="Primate en un entorno de cuidado, imagen de la copia pública suministrada" width="1050" height="1400" /><span class="image-caption">Rainfer · rescate y recuperación</span></div>
+<BaseLayout title="Rainfer — Rescate, bienestar y educación" description="Conoce Rainfer, su trabajo con primates, la educación ambiental y las formas de apoyar una cultura de cuidado." path="/">
+  <div class="home-shell home-redesign">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="hero-copy">
+        <p class="kicker"><span class="kicker-dot"></span> Centro de rescate y recuperación</p>
+        <h1 id="home-title">Cuidar la vida.<br /><em>Cambiar la mirada.</em></h1>
+        <p class="lede">Un lugar donde el rescate de primates se encuentra con el cuidado diario, el conocimiento y la educación.</p>
+        <div class="hero-actions">
+          <a class="button button-light" href="/es/que-hacemos">Conoce nuestra misión <span aria-hidden="true">↗</span></a>
+          <a class="quiet-link" href="/es/que-puedes-hacer-tu">Formas de ayudar <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-note"><span class="hero-note-mark" aria-hidden="true">✳</span><span>Respeto por cada individuo.<br />Compromiso con el bienestar.</span></div>
+      </div>
+      <div class="hero-media">
+        <img src="/assets/hero.jpg" alt="Primate en un entorno de cuidado" width="1050" height="1400" fetchpriority="high" />
+        <span class="image-caption">Rainfer <span aria-hidden="true">/</span> rescate · cuidado · aprendizaje</span>
+        <span class="hero-image-index" aria-hidden="true">01 — 03</span>
+      </div>
     </section>
-    <section class="intro-band"><div><p class="kicker">Una misión concreta</p><h2>Cuidar también es <em>entender.</em></h2></div><p>El bienestar animal se construye en los detalles: un espacio seguro, una rutina atenta, un equipo preparado y una sociedad que aprende a mirar de otra manera.</p></section>
-    {featured && <section class="feature-section"><div class="feature-image"><img src="/assets/sanctuary.jpg" alt="Espacio natural de Rainfer" loading="lazy" width="1800" height="1200" /></div><div class="feature-copy"><p class="kicker">{featured.eyebrow}</p><h2>{featured.title}</h2><p>{featured.summary}</p><a class="text-link" href="/es/que-hacemos">Explorar el trabajo ↗</a></div></section>}
-    {species && <section class="species-section"><div class="section-heading"><p class="kicker">Conocer para cuidar</p><h2>El mundo de los primates</h2><p>Acércate a sus formas de vida, vínculos y necesidades desde una mirada respetuosa.</p></div><div class="species-grid">{species.cards?.slice(0,3).map((card) => <a href={card.href} class="species-card"><img src={card.image} alt="" loading="lazy" width="800" height="600" /><span>{card.title}</span></a>)}</div></section>}
-    <section class="support-band"><div><p class="kicker">El cuidado es colectivo</p><h2>Hay muchas formas de estar cerca.</h2></div><a class="button button-dark" href="/es/que-puedes-hacer-tu">Descubrir cómo ayudar ↗</a></section>
-    <SearchPanel locale="es" />
+
+    <div class="home-trust-strip" aria-label="Áreas de trabajo">
+      <span>Una misión compartida</span><span>Bienestar animal</span><span>Educación ambiental</span><span>Conocimiento responsable</span>
+    </div>
+
+    <section class="intro-band home-intro">
+      <div><p class="kicker">La razón de estar aquí</p><h2>El cuidado empieza por <em>comprender.</em></h2></div>
+      <p>El bienestar no es un gesto aislado. Se construye con atención, entornos seguros, conocimiento y una comunidad dispuesta a aprender. Cada historia merece una mirada informada y respetuosa.</p>
+    </section>
+
+    <section class="home-pillars" aria-labelledby="pillars-title">
+      <div class="section-heading home-section-heading">
+        <p class="kicker">Lo que nos mueve</p>
+        <h2 id="pillars-title">Del cuidado a la conciencia.</h2>
+        <p>Explora las áreas que conectan la protección de los primates con una sociedad mejor informada.</p>
+      </div>
+      <div class="pillar-grid">
+        {pillars.map((pillar) => (
+          <a class="pillar-card" href={pillar.href}>
+            <div class="pillar-image"><img src={pillar.image} alt={pillar.alt} loading="lazy" width="800" height="600" /><span class="pillar-number">{pillar.number}</span></div>
+            <div class="pillar-content"><h3>{pillar.title}</h3><p>{pillar.text}</p><span class="pillar-link">Explorar <span aria-hidden="true">↗</span></span></div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {featured && <section class="feature-section home-feature">
+      <div class="feature-image"><img src="/assets/sanctuary.jpg" alt="Espacio natural en un centro de cuidado de primates" loading="lazy" width="1800" height="1200" /></div>
+      <div class="feature-copy"><p class="kicker">Nuestra labor</p><h2>Una labor que va más allá del rescate.</h2><p>{featured.summary} El cuidado, la divulgación y la educación forman parte de una misma conversación sobre bienestar.</p><a class="text-link" href="/es/que-hacemos">Conocer el trabajo <span aria-hidden="true">↗</span></a></div>
+    </section>}
+
+    {species && <section class="species-section home-species">
+      <div class="section-heading"><p class="kicker">Conocer para cuidar</p><h2>El mundo de los primates.</h2><p>Descubre algunas de las familias de primates y acércate a sus características desde el respeto.</p></div>
+      <div class="species-grid">{species.cards?.slice(0, 3).map((card) => <a href={card.href} class="species-card"><img src={card.image} alt={card.title} loading="lazy" width="800" height="600" /><span>{card.title}<span class="species-arrow" aria-hidden="true">↗</span></span></a>)}</div>
+      <a class="text-link species-all-link" href="/es/los-primates-2">Explorar la guía de primates <span aria-hidden="true">↗</span></a>
+    </section>}
+
+    <section class="home-visit-band">
+      <div class="visit-symbol" aria-hidden="true">✳</div>
+      <div><p class="kicker">Formar parte del cambio</p><h2>El cuidado también se construye en comunidad.</h2><p>Infórmate sobre las formas de apoyar la misión y consulta siempre los canales oficiales para conocer las opciones disponibles.</p></div>
+      <a class="button button-light" href="/es/que-puedes-hacer-tu">Cómo puedes ayudar <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="home-explore">
+      <div><p class="kicker">¿Buscas algo concreto?</p><h2>Continúa explorando.</h2><p>Encuentra información sobre el centro, sus programas y sus recursos.</p></div>
+      <SearchPanel locale="es" />
+    </section>
   </div>
 </BaseLayout>
