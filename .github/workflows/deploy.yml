@@ -35,6 +35,8 @@ jobs:
       - run: pnpm build
         env:
           PUBLIC_SITE_URL: https://itsbaask.github.io/rainfer-sanctuary
+      - name: Audit generated pages and local assets
+        run: pnpm audit:build
       - name: Fix root-relative paths for project Pages URL
         run: |
           python3 - <<'PY'
