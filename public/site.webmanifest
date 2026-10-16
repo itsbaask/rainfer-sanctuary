@@ -1,0 +1,19 @@
+{
+  "name": "Rainfer — Primate Care and Conservation",
+  "short_name": "Rainfer",
+  "description": "An independent informational reconstruction about primate care, education and responsible participation.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbfaf7",
+  "theme_color": "#173f35",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
