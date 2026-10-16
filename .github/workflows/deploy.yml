@@ -28,6 +28,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
+      - name: Audit route manifest
+        run: pnpm audit:links
+      - name: Audit localization coverage
+        run: pnpm audit:i18n
       - run: pnpm build
         env:
           PUBLIC_SITE_URL: https://itsbaask.github.io/rainfer-sanctuary
