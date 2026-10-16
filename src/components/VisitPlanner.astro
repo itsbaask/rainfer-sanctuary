@@ -80,7 +80,7 @@ const en = locale === 'en';
       const check = () => {
         if (getLeaflet()) { initMap(); resolve(true); return; }
         attempts += 1;
-        if (attempts > 40) { reject(new Error(en ? 'The map could not load. Check your connection and try again.' : 'No se pudo cargar el mapa. Comprueba tu conexión e inténtalo de nuevo.')); return; }
+        if (attempts > 200) { reject(new Error(en ? 'The map provider could not be reached. You can still use the official visit link below.' : 'No se pudo conectar con el proveedor del mapa. Puedes usar el enlace oficial de visitas que aparece abajo.')); return; }
         window.setTimeout(check, 150);
       };
       check();
@@ -88,6 +88,8 @@ const en = locale === 'en';
     /** @param {number} lat @param {number} lon @param {string} label */
     const showRoute = async (lat, lon, label) => {
       await waitForMap();
+      const L = getLeaflet();
+      if (!L || !map) throw new Error(en ? 'The interactive map is unavailable right now. You can still open the directions in OpenStreetMap.' : 'El mapa interactivo no está disponible ahora. Puedes abrir las indicaciones en OpenStreetMap.');
       say(en ? 'Calculating the approximate route…' : 'Calculando la ruta aproximada…');
       const url = 'https://router.project-osrm.org/route/v1/driving/' + lon + ',' + lat + ';' + destination.lon + ',' + destination.lat + '?overview=full&geometries=geojson';
       const response = await fetch(url);
