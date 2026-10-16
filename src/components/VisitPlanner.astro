@@ -57,32 +57,34 @@ const en = locale === 'en';
     const routeLink = root.querySelector('[data-route-open]');
     const locationButton = root.querySelector('[data-use-location]');
     const destination = { lat: 40.6333, lon: -3.5117 };
-    let map;
-    let originMarker;
-    let routeLayer;
-    let originPoint;
+    /** @type {any} */ let map;
+    /** @type {any} */ let originMarker;
+    /** @type {any} */ let routeLayer;
+    const L = /** @type {any} */ (window).L;
+    /** @param {string} message */
     const say = (message) => { if (feedback) feedback.textContent = message; };
     const initMap = () => {
-      if (map || !mapElement || !window.L) return;
-      map = window.L.map(mapElement, { scrollWheelZoom: false }).setView([40.61, -3.57], 10);
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      if (map || !mapElement || !L) return;
+      map = L.map(mapElement, { scrollWheelZoom: false }).setView([40.61, -3.57], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
       }).addTo(map);
-      const regionIcon = window.L.divIcon({ className: 'visit-region-pin-wrap', html: '<span class="visit-region-pin"></span>', iconSize: [24, 24], iconAnchor: [12, 12] });
-      window.L.marker([destination.lat, destination.lon], { icon: regionIcon }).addTo(map).bindPopup(en ? 'Fuente el Saz de Jarama — public reference area, not the sanctuary' : 'Fuente el Saz de Jarama — zona pública de referencia, no el santuario');
+      const regionIcon = L.divIcon({ className: 'visit-region-pin-wrap', html: '<span class="visit-region-pin"></span>', iconSize: [24, 24], iconAnchor: [12, 12] });
+      L.marker([destination.lat, destination.lon], { icon: regionIcon }).addTo(map).bindPopup(en ? 'Fuente el Saz de Jarama — public reference area, not the sanctuary' : 'Fuente el Saz de Jarama — zona pública de referencia, no el santuario');
       if (loading) loading.remove();
     };
     const waitForMap = () => new Promise((resolve, reject) => {
       let attempts = 0;
       const check = () => {
-        if (window.L) { initMap(); resolve(true); return; }
+        if (L) { initMap(); resolve(true); return; }
         attempts += 1;
         if (attempts > 40) { reject(new Error(en ? 'The map could not load. Check your connection and try again.' : 'No se pudo cargar el mapa. Comprueba tu conexión e inténtalo de nuevo.')); return; }
         window.setTimeout(check, 150);
       };
       check();
     });
+    /** @param {number} lat @param {number} lon @param {string} label */
     const showRoute = async (lat, lon, label) => {
       await waitForMap();
       originPoint = { lat, lon, label };
@@ -94,10 +96,10 @@ const en = locale === 'en';
       if (!data.routes || !data.routes[0]) throw new Error(en ? 'No route was found for that starting point.' : 'No se encontró una ruta desde ese punto.');
       const route = data.routes[0];
       if (routeLayer) routeLayer.remove();
-      routeLayer = window.L.geoJSON(route.geometry, { style: { color: '#b76e4c', weight: 5, opacity: .88, lineCap: 'round', lineJoin: 'round' } }).addTo(map);
-      const originIcon = window.L.divIcon({ className: 'visit-origin-pin-wrap', html: '<span class="visit-origin-pin"></span>', iconSize: [22, 22], iconAnchor: [11, 11] });
+      routeLayer = L.geoJSON(route.geometry, { style: { color: '#b76e4c', weight: 5, opacity: .88, lineCap: 'round', lineJoin: 'round' } }).addTo(map);
+      const originIcon = L.divIcon({ className: 'visit-origin-pin-wrap', html: '<span class="visit-origin-pin"></span>', iconSize: [22, 22], iconAnchor: [11, 11] });
       if (originMarker) originMarker.remove();
-      originMarker = window.L.marker([lat, lon], { icon: originIcon }).addTo(map).bindPopup(label || (en ? 'Your starting point' : 'Tu punto de partida'));
+      originMarker = L.marker([lat, lon], { icon: originIcon }).addTo(map).bindPopup(label || (en ? 'Your starting point' : 'Tu punto de partida'));
       map.fitBounds(routeLayer.getBounds(), { padding: [35, 35], maxZoom: 12 });
       if (distanceEl) distanceEl.textContent = (route.distance / 1000).toLocaleString(en ? 'en-GB' : 'es-ES', { maximumFractionDigits: 1 }) + ' km';
       if (durationEl) {
