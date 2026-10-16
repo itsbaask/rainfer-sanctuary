@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageContent from '../components/PageContent.astro';
+import EnglishHome from '../components/EnglishHome.astro';
 import { allPages, type Locale } from '../content/site';
 
 export function getStaticPaths() {
@@ -15,7 +16,14 @@ const { locale, page } = Astro.props as { locale: Locale; page: typeof allPages[
 const title = locale === 'es' ? page.title : page.enTitle;
 const description = locale === 'es' ? page.summary : page.enSummary;
 const path = Astro.url.pathname;
+const isEnglishHome = Astro.params.slug === 'en';
 ---
-<BaseLayout locale={locale} title={`${title} — Rainfer`} description={description} image={page.image} path={path}>
-  <PageContent page={page} locale={locale} />
-</BaseLayout>
+{isEnglishHome ? (
+  <BaseLayout locale="en" title="Rainfer — Rescue, welfare and education" description="Explore primate care, environmental education and responsible ways to support the work." path="/en/" image="/assets/hero.jpg">
+    <EnglishHome />
+  </BaseLayout>
+) : (
+  <BaseLayout locale={locale} title={`${title} — Rainfer`} description={description} image={page.image} path={path}>
+    <PageContent page={page} locale={locale} />
+  </BaseLayout>
+)}
