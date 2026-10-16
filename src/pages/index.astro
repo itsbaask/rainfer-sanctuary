@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SearchPanel from '../components/SearchPanel.astro';
+import ConservationGuide from '../components/ConservationGuide.astro';
 import { pages } from '../content/site';
 
 const featured = pages.find((page) => page.path === 'que-hacemos');
@@ -55,6 +56,8 @@ const pillars = [
         ))}
       </div>
     </section>
+
+    <ConservationGuide locale="es" />
 
     {featured && <section class="feature-section home-feature">
       <div class="feature-image"><img src="/assets/sanctuary.jpg" alt="Espacio natural en un centro de cuidado de primates" loading="lazy" width="1800" height="1200" /></div>
