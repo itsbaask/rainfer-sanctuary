@@ -1,5 +1,5 @@
 ---
-import type { Locale, Page } from '../content/site';
+import { allPages, localizedPath, type Locale, type Page } from '../content/site';
 import { ui } from '../i18n/strings';
 const { page, locale = 'es' } = Astro.props as { page: Page; locale: Locale };
 const copy = ui[locale];
@@ -9,6 +9,13 @@ const summary = locale === 'es' ? page.summary : page.enSummary;
 const body = locale === 'es' ? page.body : page.enBody;
 const cards = page.cards || [];
 const workPath = locale === 'es' ? '/es/que-hacemos' : '/en/what-we-do';
+const localizeCardHref = (href?: string) => {
+  if (!href) return undefined;
+  if (/^https?:\\/\\//i.test(href) || locale === 'es') return href;
+  const sourcePath = href.replace(/^\\/es\\//, '').replace(/\\/$/, '');
+  const target = allPages.find((candidate) => candidate.path === sourcePath);
+  return target?.enPath ? localizedPath(target, 'en') : undefined;
+};
 const formRequired = locale === 'es' ? 'Completa los campos obligatorios.' : 'Please complete the required fields.';
 const formEmailError = locale === 'es' ? 'Introduce un correo válido.' : 'Enter a valid email address.';
 const formSuccess = locale === 'es' ? 'Consulta validada localmente. No se ha enviado ningún mensaje.' : 'Enquiry validated locally. No message has been sent.';
@@ -29,7 +36,7 @@ const formSuccess = locale === 'es' ? 'Consulta validada localmente. No se ha en
     <div class="section-heading"><p class="kicker">{copy.explore}</p><h2 id="related-title">{locale === 'es' ? 'Sigue el hilo' : 'Follow the thread'}</h2></div>
     <div class="card-grid">
       {cards.map((card) => {
-        const href = card.href ? (locale === 'en' ? card.href.replace('/es/', '/en/') : card.href) : undefined;
+        const href = localizeCardHref(card.href);
         return href ? (
           <a class="image-card" href={href}>
             {card.image && <img src={card.image} alt="" loading="lazy" width="800" height="600" />}
