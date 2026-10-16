@@ -1,0 +1,66 @@
+name: Deploy Astro site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm build
+        env:
+          PUBLIC_SITE_URL: https://itsbaask.github.io/rainfer-sanctuary
+      - name: Fix root-relative paths for project Pages URL
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          prefix = "/rainfer-sanctuary"
+          for path in Path("dist").rglob("*"):
+              if not path.is_file() or path.suffix.lower() not in {".html", ".css", ".js", ".xml", ".json", ".webmanifest", ".txt"}:
+                  continue
+              try:
+                  data = path.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+              for attr in ("href", "src", "action"):
+                  data = data.replace(f'{attr}="/', f'{attr}="{prefix}/')
+              data = data.replace('url(/', f'url({prefix}/')
+              data = data.replace('url("/', f'url("{prefix}/')
+              data = data.replace("url('/", f"url('{prefix}/")
+              path.write_text(data, encoding="utf-8")
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
