@@ -47,8 +47,8 @@ const suggestions = en ? [{label:'Animal care',query:'care'},{label:'Education',
     const empty = root.querySelector('[data-search-empty]');
     const count = root.querySelector('[data-search-count]');
     const en = root.getAttribute('data-locale') === 'en';
-    const normalize = (value) => value.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-    const update = (raw) => {
+    const normalize = (value: string) => value.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    const update = (raw: string) => {
       const q = normalize(raw);
       let shown = 0;
       items.forEach((item) => {
