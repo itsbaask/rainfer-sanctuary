@@ -3,13 +3,54 @@ import type { Locale } from '../content/site';
 import { ui } from '../i18n/strings';
 const { locale = 'es' } = Astro.props as { locale: Locale };
 const copy = ui[locale];
-const contactPath = locale === 'es' ? '/es/contacto' : '/en/contact';
-const supportPath = locale === 'es' ? '/es/que-puedes-hacer-tu' : '/en/support-us';
+const isEs = locale === 'es';
+const contactPath = isEs ? '/es/contacto' : '/en/contact';
+const supportPath = isEs ? '/es/que-puedes-hacer-tu' : '/en/support-us';
+const officialPages = [
+  { label: isEs ? 'Qué hacemos' : 'Our mission', href: 'https://rainfer.org/que-hacemos/' },
+  { label: isEs ? 'Visitas y educación' : 'Visits & education', href: 'https://rainfer.org/visitanos/' },
+  { label: isEs ? 'Donaciones' : 'Donations', href: 'https://rainfer.org/que-puedes-hacer-tu/donaciones/' },
+  { label: isEs ? 'Apadrina un primate' : 'Sponsor a primate', href: 'https://rainfer.org/que-puedes-hacer-tu/apadrina-un-primate/' },
+];
+const contacts = [
+  { label: isEs ? 'Información general' : 'General enquiries', email: 'info@rainfer.org' },
+  { label: isEs ? 'Donaciones y apadrinamiento' : 'Donations & sponsorship', email: 'padrinos@rainfer.org' },
+  { label: isEs ? 'Visitas educativas' : 'Educational visits', email: 'visitas@rainfer.org' },
+  { label: isEs ? 'Visitas guiadas' : 'Guided visits', email: 'visitasguiadas@rainfer.org' },
+  { label: isEs ? 'Voluntariado' : 'Volunteering', email: 'voluntarios@rainfer.org' },
+  { label: isEs ? 'Prácticas' : 'Placements', email: 'practicas@rainfer.org' },
+];
 ---
 <footer class="site-footer">
-  <div class="footer-main">
-    <div><p class="kicker">RAINFER</p><h2>{locale === 'es' ? 'Un lugar para volver a aprender a cuidar.' : 'A place to learn how to care again.'}</h2></div>
-    <div class="footer-links"><a href={contactPath}>{locale === 'es' ? 'Contacto' : 'Contact'}</a><a href={supportPath}>{copy.support}</a><a href={locale === 'es' ? '/es/criterios-editoriales' : '/en/editorial-standards'}>{locale === 'es' ? 'Criterios editoriales' : 'Editorial standards'}</a><a href="https://rainfer.org/" rel="noopener noreferrer">{copy.official}</a></div>
+  <div class="footer-main footer-main-expanded">
+    <div class="footer-brand">
+      <p class="kicker">RAINFER · FUNDACIÓN CHIMPATÍA</p>
+      <h2>{isEs ? 'Rescate, rehabilitación y una segunda oportunidad para los primates.' : 'Rescue, rehabilitation and a second chance for primates.'}</h2>
+      <p class="footer-summary">{isEs ? 'Rainfer es un centro de rescate y rehabilitación de primates en la Comunidad de Madrid. Su labor comenzó en 1995.' : 'Rainfer is a primate rescue and rehabilitation centre in the Madrid region of Spain. Its work began in 1995.'}</p>
+      <a class="footer-official-link" href="https://rainfer.org/" target="_blank" rel="noopener noreferrer">{isEs ? 'Visitar el sitio oficial' : 'Visit the official website'} ↗</a>
+    </div>
+    <div class="footer-column">
+      <h3>{isEs ? 'Explora Rainfer' : 'Explore Rainfer'}</h3>
+      <a href={isEs ? '/es/que-hacemos' : '/en/our-mission'}>{isEs ? 'Qué hacemos' : 'Our mission'}</a>
+      <a href={isEs ? '/es/visitanos' : '/en/visits'}>{isEs ? 'Visítanos y educación' : 'Visits & education'}</a>
+      <a href={supportPath}>{isEs ? 'Cómo puedes ayudar' : 'How you can help'}</a>
+      <a href={isEs ? '/es/impacto' : '/en/impact'}>{isEs ? 'Impacto y conservación' : 'Impact & conservation'}</a>
+      <a href={contactPath}>{isEs ? 'Contacto' : 'Contact'}</a>
+    </div>
+    <div class="footer-column">
+      <h3>{isEs ? 'Información oficial' : 'Official information'}</h3>
+      {officialPages.map((item) => <a href={item.href} target="_blank" rel="noopener noreferrer">{item.label} ↗</a>)}
+      <p class="footer-note">{isEs ? 'La visita al centro requiere solicitud y confirmación previas. La ubicación exacta no se publica por seguridad y bienestar de los primates.' : 'Visits require an application and prior confirmation. The exact location is not published to protect the primates’ safety and wellbeing.'}</p>
+    </div>
+    <div class="footer-column footer-contact">
+      <h3>{isEs ? 'Contactos' : 'Contact'}</h3>
+      {contacts.map((item) => <a href={`mailto:${item.email}`}><span>{item.label}</span><strong>{item.email}</strong></a>)}
+      <p class="footer-postal">{isEs ? 'Correo postal' : 'Postal address'}<br />Apartado de Correos 43<br />28140 Madrid, España</p>
+    </div>
   </div>
-  <div class="footer-bottom"><span>© Rainfer · {locale === 'es' ? 'Reconstrucción informativa' : 'Informational reconstruction'}</span><span>{copy.sourceNote}</span></div>
+  <div class="footer-bottom footer-bottom-expanded">
+    <span>© {new Date().getFullYear()} Rainfer · {isEs ? 'Reconstrucción informativa independiente' : 'Independent informational reconstruction'}</span>
+    <span>{isEs ? 'Este sitio no es el sitio oficial ni está afiliado a Rainfer. Los datos operativos pueden cambiar; confirma siempre la información en rainfer.org.' : 'This is not the official website and is not affiliated with Rainfer. Operational details may change; always confirm information at rainfer.org.'}</span>
+    <a href={isEs ? '/es/criterios-editoriales' : '/en/editorial-standards'}>{isEs ? 'Criterios editoriales y fuentes' : 'Editorial standards & sources'}</a>
+  </div>
 </footer>
