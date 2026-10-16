@@ -1,0 +1,9 @@
+import { defineConfig } from 'astro/config';
+
+export default defineConfig({
+  output: 'static',
+  site: process.env.PUBLIC_SITE_URL || undefined,
+  build: { format: 'directory' },
+  compressHTML: true,
+  vite: { build: { sourcemap: false } }
+});

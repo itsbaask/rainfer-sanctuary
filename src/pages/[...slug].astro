@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageContent from '../components/PageContent.astro';
+import { allPages, type Locale } from '../content/site';
+
+export function getStaticPaths() {
+  const paths = [{ params: { slug: 'es' }, props: { locale: 'es' as Locale, page: allPages[0] } }, { params: { slug: 'en' }, props: { locale: 'en' as Locale, page: allPages[0] } }];
+  for (const page of allPages) {
+    paths.push({ params: { slug: `es/${page.path}` }, props: { locale: 'es' as Locale, page } });
+    if (page.enPath) paths.push({ params: { slug: `en/${page.enPath}` }, props: { locale: 'en' as Locale, page } });
+  }
+  return paths;
+}
+const { locale, page } = Astro.props as { locale: Locale; page: typeof allPages[number] };
+const title = locale === 'es' ? page.title : page.enTitle;
+const description = locale === 'es' ? page.summary : page.enSummary;
+const path = Astro.url.pathname;
+---
+<BaseLayout locale={locale} title={`${title} — Rainfer`} description={description} image={page.image} path={path}>
+  <PageContent page={page} locale={locale} />
+</BaseLayout>

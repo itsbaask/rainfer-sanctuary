@@ -1,0 +1,14 @@
+---
+import type { Locale } from '../content/site';
+import { allPages } from '../content/site';
+const { locale = 'es' } = Astro.props as { locale: Locale };
+const searchablePages = locale === 'es' ? allPages : allPages.filter((page) => page.enPath);
+const list = searchablePages.map((p) => ({ href: `/${locale}/${locale === 'es' ? p.path : p.enPath}`, title: locale === 'es' ? p.title : p.enTitle, summary: locale === 'es' ? p.summary : p.enSummary }));
+const label = locale === 'es' ? 'Buscar en el sitio' : 'Search the site';
+const placeholder = locale === 'es' ? 'Escribe para filtrar páginas' : 'Type to filter pages';
+---
+<section class="search-panel" aria-labelledby="search-title"><div><p class="kicker">{label}</p><h2 id="search-title">{locale === 'es' ? 'Encuentra una ruta para explorar.' : 'Find a route to explore.'}</h2></div><input class="search-input" type="search" placeholder={placeholder} aria-label={label} data-search-input /><div class="search-results" data-search-results>{list.map((item) => <a href={item.href} data-search-item data-search-text={`${item.title} ${item.summary}`}><strong>{item.title}</strong><span>{item.summary}</span></a>)}</div><p class="empty-state" data-search-empty hidden>{locale === 'es' ? 'No encontramos páginas con ese término.' : 'No pages match that term.'}</p></section>
+<script is:inline>
+  const input = document.querySelector('[data-search-input]'); const items = [...document.querySelectorAll('[data-search-item]')]; const empty = document.querySelector('[data-search-empty]');
+  input?.addEventListener('input', (event) => { const target = event.target; if (!(target instanceof HTMLInputElement)) return; const q = target.value.toLowerCase().trim(); let shown = 0; items.forEach((item) => { const text = item.getAttribute('data-search-text')?.toLowerCase() || ''; const visible = !q || text.includes(q); if (item instanceof HTMLElement) item.hidden = !visible; if (visible) shown++; }); if (empty instanceof HTMLElement) empty.hidden = shown !== 0; });
+</script>
