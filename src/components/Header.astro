@@ -16,7 +16,7 @@ const langPath = currentPage ? localizedPath(currentPage, other) : `/${other}`;
     <button class="menu-button" type="button" data-menu-button data-open-label={copy.menu} data-close-label={copy.close} aria-expanded="false" aria-controls="site-menu">{copy.menu}</button>
     <nav id="site-menu" class="site-nav" data-menu aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}>
       {navItems.map((item) => {
-        const href = locale === 'es' ? item.href : item.href.replace('/es/', '/en/');
+        const href = locale === 'es' ? item.href : item.enHref;
         const active = Astro.url.pathname === href || Astro.url.pathname.startsWith(`${href}/`);
         return <a href={href} class={active ? 'active' : undefined} aria-current={active ? 'page' : undefined}>{item[locale]}</a>;
       })}
