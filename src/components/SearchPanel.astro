@@ -23,11 +23,11 @@ const suggestions = en ? [{label:'Animal care',query:'care'},{label:'Education',
       <input id={`site-search-${locale}`} class="search-input" type="search" placeholder={placeholder} autocomplete="off" data-search-input />
       <span class="search-key-hint" aria-hidden="true">⌕</span>
     </div>
-    <div class="search-suggestions" aria-label={en ? 'Suggested searches' : 'اقتراحات للبحث'}>
-      <span class="search-suggestions-label">{en ? 'Explore by topic' : 'استكشف حسب الموضوع'}</span>
+    <div class="search-suggestions" aria-label={en ? 'Suggested searches' : 'Sugerencias de búsqueda'}>
+      <span class="search-suggestions-label">{en ? 'Explore by topic' : 'Explora por tema'}</span>
       {suggestions.map((item) => <button type="button" class="search-chip" data-search-suggestion={item.query}>{item.label}<span aria-hidden="true">↗</span></button>)}
     </div>
-    <div class="search-results-heading"><span>{en ? 'Explore the pages' : 'صفحات يمكنك استكشافها'}</span><span class="search-count" data-search-count aria-live="polite">{en ? `${list.length} destinations` : `${list.length} وجهة للاستكشاف`}</span></div>
+    <div class="search-results-heading"><span>{en ? 'Explore the pages' : 'Páginas para explorar'}</span><span class="search-count" data-search-count aria-live="polite">{en ? `${list.length} destinations` : `${list.length} páginas para explorar`}</span></div>
     <div class="search-results" data-search-results>
       {list.map((item, index) => <a href={item.href} data-search-item data-search-text={`${item.title} ${item.summary}`} class="search-result-card">
         <span class="search-result-number">{String(index + 1).padStart(2, '0')}</span>
