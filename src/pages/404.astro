@@ -1,6 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="404 — Rainfer" description="Página no encontrada" noindex>
-  <section class="error-page"><p class="kicker">404 · Página no encontrada</p><h1>La ruta se ha perdido<br /><em>entre las hojas.</em></h1><p>Vuelve al inicio o explora el trabajo de Rainfer.</p><a class="button button-dark" href="/es">Volver al inicio ↗</a></section>
+<BaseLayout title="404 — Rainfer" description="La página que buscas no está disponible. Explora la información sobre Rainfer y los primates." noindex>
+  <section class="error-page" aria-labelledby="error-title">
+    <p class="kicker">404 · Página no encontrada</p>
+    <h1 id="error-title">La ruta se ha perdido<br /><em>entre las hojas.</em></h1>
+    <p>Es posible que el enlace haya cambiado. Vuelve al inicio o explora el trabajo de Rainfer.</p>
+    <div class="hero-actions"><a class="button button-dark" href="/es">Volver al inicio ↗</a><a class="text-link" href="/es/que-hacemos">Explorar nuestra labor</a></div>
+  </section>
 </BaseLayout>
