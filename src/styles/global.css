@@ -128,3 +128,32 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(prefers-reduced-motion:reduce){
  .search-results a{transition:none}
 }
+
+
+/* Global polish: editorial guide, resilient focus states and touch-friendly controls */
+:where(a,button,input,textarea,summary,[tabindex]):focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.site-header{position:relative;z-index:10}
+.site-nav a[aria-current="page"]{border-color:var(--clay);font-weight:750}
+.care-guide{border-top:1px solid var(--line);display:grid;gap:clamp(2rem,6vw,6rem);grid-template-columns:.82fr 1.18fr;padding:clamp(4rem,8vw,7.5rem) 0}
+.care-guide-intro{align-self:start;position:sticky;top:2rem}
+.care-guide-intro h2{font-size:clamp(2.4rem,4.4vw,4.5rem);max-width:10ch}
+.care-guide-intro>p:not(.kicker):not(.care-filter-status){color:#56665d;max-width:29rem}
+.care-filter{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem}
+.care-filter button{background:transparent;border:1px solid var(--line);border-radius:99px;color:var(--forest);font-size:.72rem;padding:.65rem .85rem;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.care-filter button:hover,.care-filter button[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--cream)}
+.care-filter-status{color:#657168;font-size:.75rem;min-height:1.5rem}
+.care-guide-grid{display:grid;gap:.9rem;grid-template-columns:1fr}
+.care-principle{background:#f2eee5;border:1px solid rgba(23,63,53,.08);display:flex;flex-direction:column;min-height:220px;padding:clamp(1.4rem,3vw,2.2rem);transition:background .25s ease,transform .25s ease}
+.care-principle:hover{background:#ece6d9;transform:translateY(-2px)}
+.care-principle-top{align-items:center;color:var(--clay);display:flex;font-size:.68rem;font-weight:700;justify-content:space-between;letter-spacing:.12em}
+.care-principle-top span:last-child{font-size:1.5rem}
+.care-principle h3{font-size:clamp(1.65rem,2.4vw,2.3rem);margin:1.5rem 0 .65rem}
+.care-principle p{color:#59665e;font-size:.9rem;max-width:34rem}
+.care-principle a{align-self:flex-start;border-bottom:1px solid var(--clay);color:var(--forest);font-size:.73rem;font-weight:750;letter-spacing:.05em;margin-top:auto;padding:.8rem 0 .25rem;text-transform:uppercase}
+.home-explore{border-top:1px solid var(--line);display:grid;gap:3rem;grid-template-columns:.75fr 1.25fr;padding:5rem 0}
+.home-explore .search-panel{margin:0}
+.home-explore h2{font-size:clamp(2rem,3.4vw,3.4rem)}
+@media(max-width:800px){.care-guide{grid-template-columns:1fr;gap:1.5rem;padding:4rem 0}.care-guide-intro{position:static}.care-guide-intro h2{max-width:13ch}.care-principle{min-height:0}.home-explore{grid-template-columns:1fr;padding:3.5rem 0}.site-nav{box-shadow:0 18px 25px rgba(16,45,35,.08);top:100%}}
+@media(hover:none){.home-redesign .home-hero:hover .hero-media img,.care-principle:hover{transform:none}}
