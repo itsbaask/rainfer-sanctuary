@@ -9,7 +9,7 @@ const supportPath = locale === 'es' ? '/es/que-puedes-hacer-tu' : '/en/support-u
 <footer class="site-footer">
   <div class="footer-main">
     <div><p class="kicker">RAINFER</p><h2>{locale === 'es' ? 'Un lugar para volver a aprender a cuidar.' : 'A place to learn how to care again.'}</h2></div>
-    <div class="footer-links"><a href={contactPath}>{locale === 'es' ? 'Contacto' : 'Contact'}</a><a href={supportPath}>{copy.support}</a><a href="https://rainfer.org/" rel="noopener noreferrer">{copy.official}</a></div>
+    <div class="footer-links"><a href={contactPath}>{locale === 'es' ? 'Contacto' : 'Contact'}</a><a href={supportPath}>{copy.support}</a><a href={locale === 'es' ? '/es/criterios-editoriales' : '/en/editorial-standards'}>{locale === 'es' ? 'Criterios editoriales' : 'Editorial standards'}</a><a href="https://rainfer.org/" rel="noopener noreferrer">{copy.official}</a></div>
   </div>
   <div class="footer-bottom"><span>© Rainfer · {locale === 'es' ? 'Reconstrucción informativa' : 'Informational reconstruction'}</span><span>{copy.sourceNote}</span></div>
 </footer>
