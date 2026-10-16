@@ -32,11 +32,11 @@ const items = [
 <script is:inline>
   document.querySelectorAll('[data-care-guide]').forEach((root) => {
     if (!(root instanceof HTMLElement)) return;
-    const buttons = Array.from(root.querySelectorAll('[data-care-filter]'));
-    const items = Array.from(root.querySelectorAll('[data-care-item]'));
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-care-filter]'));
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-care-item]'));
     const status = root.querySelector('[data-care-status]');
     const english = document.documentElement.lang === 'en';
-    const labels = english ? { all: 'Showing all three principles.', care: 'Showing animal welfare.', learn: 'Showing education.', act: 'Showing ways to participate.' } : { all: 'Mostrando los tres principios.', care: 'Mostrando bienestar animal.', learn: 'Mostrando educación.', act: 'Mostrando formas de participar.' };
+    const labels: Record<string, string> = english ? { all: 'Showing all three principles.', care: 'Showing animal welfare.', learn: 'Showing education.', act: 'Showing ways to participate.' } : { all: 'Mostrando los tres principios.', care: 'Mostrando bienestar animal.', learn: 'Mostrando educación.', act: 'Mostrando formas de participar.' };
     buttons.forEach((button) => button.addEventListener('click', () => {
       const filter = button.getAttribute('data-care-filter') || 'all';
       buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
