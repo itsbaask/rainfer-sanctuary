@@ -4,32 +4,39 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import type { Locale } from '../content/site';
 import { ui } from '../i18n/strings';
-
 interface Props { locale?: Locale; title: string; description: string; image?: string; path?: string; noindex?: boolean; }
 const { locale = 'es', title, description, image = '/assets/hero.jpg', path = '', noindex = false } = Astro.props;
-const origin = import.meta.env.PUBLIC_SITE_URL;
-const canonical = origin && path ? `${origin.replace(/\/$/, '')}${path}` : undefined;
+const origin = (import.meta.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');
+const canonical = origin && path ? `${origin}${path.startsWith('/') ? path : `/${path}`}` : undefined;
+const absoluteImage = /^https?:\/\//i.test(image) ? image : origin ? `${origin}${image.startsWith('/') ? image : `/${image}`}` : image;
 const copy = ui[locale];
 ---
 <!doctype html>
 <html lang={locale}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#173f35" />
+    <meta name="color-scheme" content="light" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title}</title>
     {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="image" href={image} fetchpriority="high" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={locale === 'es' ? 'es_ES' : 'en_GB'} />
     <meta property="og:site_name" content="Rainfer" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={absoluteImage} />
+    <meta property="og:image:alt" content={locale === 'es' ? 'Rainfer: rescate, cuidado y educación de primates' : 'Rainfer: primate rescue, care and education'} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="twitter:image" content={absoluteImage} />
   </head>
   <body>
     <a class="skip-link" href="#main">{copy.skip}</a>
@@ -39,7 +46,18 @@ const copy = ui[locale];
     <script is:inline>
       const menu = document.querySelector('[data-menu]');
       const button = document.querySelector('[data-menu-button]');
-      button?.addEventListener('click', () => { const open = menu?.toggleAttribute('data-open'); button?.setAttribute('aria-expanded', String(Boolean(open))); });
+      const closeMenu = () => {
+        menu?.removeAttribute('data-open');
+        button?.setAttribute('aria-expanded', 'false');
+        if (button instanceof HTMLButtonElement) button.textContent = button.dataset.openLabel || button.textContent;
+      };
+      button?.addEventListener('click', () => {
+        const open = menu?.toggleAttribute('data-open') || false;
+        button.setAttribute('aria-expanded', String(open));
+        if (button instanceof HTMLButtonElement) button.textContent = open ? (button.dataset.closeLabel || button.textContent) : (button.dataset.openLabel || button.textContent);
+      });
+      menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMenu(); });
       document.querySelectorAll('[data-accordion]').forEach((item) => item.addEventListener('click', () => item.toggleAttribute('open')));
     </script>
   </body>
