@@ -1,6 +1,7 @@
 ---
 import { allPages, localizedPath, type Locale, type Page } from '../content/site';
 import { ui } from '../i18n/strings';
+import VisitPlanner from './VisitPlanner.astro';
 const { page, locale = 'es' } = Astro.props as { page: Page; locale: Locale };
 const copy = ui[locale];
 const title = locale === 'es' ? page.title : page.enTitle;
@@ -29,6 +30,7 @@ const formSuccess = locale === 'es' ? 'Consulta validada localmente. No se ha en
     <div><p class="kicker">{eyebrow}</p><h1 id="page-title">{title}</h1><p class="lede">{summary}</p><span class="verified">{copy.status}</span></div>
     {page.image && <img src={page.image} alt="" width="1200" height="900" loading="eager" />}
   </section>
+  {page.kind === "visit" && page.path === "visitanos" && <VisitPlanner locale={locale} />}
   <section class="content-columns" aria-label={locale === 'es' ? 'Información principal' : 'Main information'}>
     <div class="body-copy">{body.map((paragraph) => <p>{paragraph}</p>)}</div>
     <aside class="side-note"><p class="kicker">{locale === 'es' ? 'Una mirada honesta' : 'An honest view'}</p><p>{locale === 'es' ? 'Cuando un dato requiere confirmación, lo decimos. La conservación también significa cuidar la información.' : 'When a detail needs confirmation, we say so. Conservation also means caring for information.'}</p></aside>
