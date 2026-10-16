@@ -9,16 +9,69 @@ const summary = locale === 'es' ? page.summary : page.enSummary;
 const body = locale === 'es' ? page.body : page.enBody;
 const cards = page.cards || [];
 const workPath = locale === 'es' ? '/es/que-hacemos' : '/en/what-we-do';
+const formRequired = locale === 'es' ? 'Completa los campos obligatorios.' : 'Please complete the required fields.';
+const formEmailError = locale === 'es' ? 'Introduce un correo válido.' : 'Enter a valid email address.';
+const formSuccess = locale === 'es' ? 'Consulta validada localmente. No se ha enviado ningún mensaje.' : 'Enquiry validated locally. No message has been sent.';
 ---
 <div class={`page-shell page-kind-${page.kind}`}>
-  <div class="breadcrumbs"><a href={`/${locale}`}>{copy.breadcrumbHome}</a><span>/</span><span>{title}</span></div>
-  <section class="page-hero page-hero-split"><div><p class="kicker">{eyebrow}</p><h1>{title}</h1><p class="lede">{summary}</p><span class="verified">{copy.status}</span></div>{page.image && <img src={page.image} alt="" width="1200" height="900" loading="eager" />}</section>
-  <section class="content-columns"><div class="body-copy">{body.map((paragraph) => <p>{paragraph}</p>)}</div><aside class="side-note"><p class="kicker">{locale === 'es' ? 'Una mirada honesta' : 'An honest view'}</p><p>{locale === 'es' ? 'Cuando un dato requiere confirmación, lo decimos. La conservación también significa cuidar la información.' : 'When a detail needs confirmation, we say so. Conservation also means caring for information.'}</p></aside></section>
-  {cards.length > 0 && <section class="card-section"><div class="section-heading"><p class="kicker">{copy.explore}</p><h2>{locale === 'es' ? 'Sigue el hilo' : 'Follow the thread'}</h2></div><div class="card-grid">{cards.map((card) => <a class="image-card" href={card.href ? (locale === 'en' ? card.href.replace('/es/', '/en/') : card.href) : '#'}>{card.image && <img src={card.image} alt="" loading="lazy" width="800" height="600" />}<div><h3>{locale === 'es' ? card.title : card.enTitle}</h3><p>{locale === 'es' ? card.text : card.enText}</p><span class="text-link">{copy.readMore} ↗</span></div></a>)}</div></section>}
-  {page.faq && <section class="faq-section"><div class="section-heading"><p class="kicker">FAQ</p><h2>{locale === 'es' ? 'Antes de venir' : 'Before you visit'}</h2></div>{page.faq.map((item) => <details class="faq-item" data-accordion><summary>{locale === 'es' ? item.q : item.enQ}<span>+</span></summary><p>{locale === 'es' ? item.a : item.enA}</p></details>)}</section>}
-  {page.kind === 'contact' && <section class="form-section"><div><p class="kicker">{locale === 'es' ? 'Consulta' : 'Enquiry'}</p><h2>{locale === 'es' ? 'Prepara tu mensaje' : 'Prepare your message'}</h2><p>{copy.formNote}</p></div><form data-local-form><label>{copy.formName}<input name="name" required /></label><label>{copy.formEmail}<input name="email" type="email" required /></label><label>{copy.formMessage}<textarea name="message" rows="5" required></textarea></label><button class="button button-dark" type="submit">{copy.formSend}</button><p class="form-feedback" data-form-feedback role="status"></p></form></section>}
+  <nav class="breadcrumbs" aria-label={locale === 'es' ? 'Ruta de navegación' : 'Breadcrumb'}>
+    <a href={`/${locale}`}>{copy.breadcrumbHome}</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span>
+  </nav>
+  <section class="page-hero page-hero-split" aria-labelledby="page-title">
+    <div><p class="kicker">{eyebrow}</p><h1 id="page-title">{title}</h1><p class="lede">{summary}</p><span class="verified">{copy.status}</span></div>
+    {page.image && <img src={page.image} alt="" width="1200" height="900" loading="eager" />}
+  </section>
+  <section class="content-columns" aria-label={locale === 'es' ? 'Información principal' : 'Main information'}>
+    <div class="body-copy">{body.map((paragraph) => <p>{paragraph}</p>)}</div>
+    <aside class="side-note"><p class="kicker">{locale === 'es' ? 'Una mirada honesta' : 'An honest view'}</p><p>{locale === 'es' ? 'Cuando un dato requiere confirmación, lo decimos. La conservación también significa cuidar la información.' : 'When a detail needs confirmation, we say so. Conservation also means caring for information.'}</p></aside>
+  </section>
+  {cards.length > 0 && <section class="card-section" aria-labelledby="related-title">
+    <div class="section-heading"><p class="kicker">{copy.explore}</p><h2 id="related-title">{locale === 'es' ? 'Sigue el hilo' : 'Follow the thread'}</h2></div>
+    <div class="card-grid">
+      {cards.map((card) => {
+        const href = card.href ? (locale === 'en' ? card.href.replace('/es/', '/en/') : card.href) : undefined;
+        return href ? (
+          <a class="image-card" href={href}>
+            {card.image && <img src={card.image} alt="" loading="lazy" width="800" height="600" />}
+            <div><h3>{locale === 'es' ? card.title : card.enTitle}</h3><p>{locale === 'es' ? card.text : card.enText}</p><span class="text-link">{copy.readMore} ↗</span></div>
+          </a>
+        ) : (
+          <article class="image-card">
+            {card.image && <img src={card.image} alt="" loading="lazy" width="800" height="600" />}
+            <div><h3>{locale === 'es' ? card.title : card.enTitle}</h3><p>{locale === 'es' ? card.text : card.enText}</p></div>
+          </article>
+        );
+      })}
+    </div>
+  </section>}
+  {page.faq && <section class="faq-section" aria-labelledby="faq-title"><div class="section-heading"><p class="kicker">FAQ</p><h2 id="faq-title">{locale === 'es' ? 'Antes de venir' : 'Before you visit'}</h2></div>{page.faq.map((item) => <details class="faq-item"><summary>{locale === 'es' ? item.q : item.enQ}<span aria-hidden="true">+</span></summary><p>{locale === 'es' ? item.a : item.enA}</p></details>)}</section>}
+  {page.kind === 'contact' && <section class="form-section" aria-labelledby="contact-form-title">
+    <div><p class="kicker">{locale === 'es' ? 'Consulta' : 'Enquiry'}</p><h2 id="contact-form-title">{locale === 'es' ? 'Prepara tu mensaje' : 'Prepare your message'}</h2><p>{copy.formNote}</p></div>
+    <form data-local-form data-required-message={formRequired} data-email-message={formEmailError} data-success-message={formSuccess}>
+      <label>{copy.formName}<input name="name" autocomplete="name" required /></label>
+      <label>{copy.formEmail}<input name="email" type="email" autocomplete="email" required /></label>
+      <label>{copy.formMessage}<textarea name="message" rows="5" required></textarea></label>
+      <button class="button button-dark" type="submit">{copy.formSend}</button>
+      <p class="form-feedback" data-form-feedback role="status" aria-live="polite"></p>
+    </form>
+  </section>}
   <div class="page-footer-cta"><p class="kicker">{copy.learn}</p><a class="button button-light" href={workPath}>{locale === 'es' ? 'Conocer el trabajo de Rainfer' : 'Learn about Rainfer’s work'} ↗</a></div>
 </div>
 <script is:inline>
-  document.querySelectorAll('[data-local-form]').forEach((node) => { if (!(node instanceof HTMLFormElement)) return; node.addEventListener('submit', (event) => { event.preventDefault(); const feedback = node.querySelector('[data-form-feedback]'); const email = node.querySelector('[name="email"]'); if (!(feedback instanceof HTMLElement) || !(email instanceof HTMLInputElement)) return; if (!node.checkValidity()) { feedback.textContent = 'Revisa los campos obligatorios.'; return; } if (!email.value.includes('@')) { feedback.textContent = 'Introduce un correo válido.'; return; } feedback.textContent = 'Consulta validada localmente. No se ha enviado ningún mensaje.'; node.reset(); }); });
+  document.querySelectorAll('[data-local-form]').forEach((node) => {
+    if (!(node instanceof HTMLFormElement)) return;
+    node.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const feedback = node.querySelector('[data-form-feedback]');
+      const email = node.querySelector('[name="email"]');
+      if (!(feedback instanceof HTMLElement) || !(email instanceof HTMLInputElement)) return;
+      if (!node.checkValidity()) {
+        feedback.textContent = !email.validity.valid ? (node.dataset.emailMessage || 'Enter a valid email address.') : (node.dataset.requiredMessage || 'Please complete the required fields.');
+        node.reportValidity();
+        return;
+      }
+      feedback.textContent = node.dataset.successMessage || 'Enquiry validated locally. No message has been sent.';
+      node.reset();
+    });
+  });
 </script>
