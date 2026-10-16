@@ -2,33 +2,70 @@
 import type { Locale } from '../content/site';
 import { allPages } from '../content/site';
 const { locale = 'es' } = Astro.props as { locale: Locale };
-const searchablePages = locale === 'es' ? allPages : allPages.filter((page) => page.enPath);
-const list = searchablePages.map((p) => ({ href: `/${locale}/${locale === 'es' ? p.path : p.enPath}`, title: locale === 'es' ? p.title : p.enTitle, summary: locale === 'es' ? p.summary : p.enSummary }));
-const label = locale === 'es' ? 'Buscar en el sitio' : 'Search the site';
-const placeholder = locale === 'es' ? 'Escribe para filtrar páginas' : 'Type to filter pages';
+const en = locale === 'en';
+const searchablePages = en ? allPages.filter((page) => page.enPath) : allPages;
+const list = searchablePages.map((p) => ({ href: `/${locale}/${en ? p.enPath : p.path}`, title: en ? p.enTitle : p.title, summary: en ? p.enSummary : p.summary }));
+const label = en ? 'Search the site' : 'Buscar en el sitio';
+const placeholder = en ? 'Try “education”, “visits” or “primates”…' : 'Prueba «educación», «visitas» o «primates»…';
+const suggestions = en ? [{label:'Animal care',query:'care'},{label:'Education',query:'education'},{label:'Visits',query:'visit'},{label:'Ways to help',query:'help'}] : [{label:'Bienestar',query:'bienestar'},{label:'Educación',query:'educación'},{label:'Visitas',query:'visita'},{label:'Cómo ayudar',query:'ayuda'}];
 ---
-<section class="search-panel" aria-labelledby="search-title">
-  <div><p class="kicker">{label}</p><h2 id="search-title">{locale === 'es' ? 'Encuentra una ruta para explorar.' : 'Find a route to explore.'}</h2></div>
-  <label class="visually-hidden" for="site-search">{label}</label>
-  <input id="site-search" class="search-input" type="search" placeholder={placeholder} aria-label={label} autocomplete="off" data-search-input />
-  <div class="search-results" data-search-results aria-live="polite">{list.map((item) => <a href={item.href} data-search-item data-search-text={`${item.title} ${item.summary}`}><strong>{item.title}</strong><span>{item.summary}</span></a>)}</div>
-  <p class="empty-state" data-search-empty role="status" hidden>{locale === 'es' ? 'No encontramos páginas con ese término.' : 'No pages match that term.'}</p>
+<section class="search-panel search-experience" aria-labelledby={`search-title-${locale}`} data-search-panel data-locale={locale}>
+  <div class="search-panel-heading">
+    <div class="search-heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+    <p class="kicker">{label}</p>
+    <h2 id={`search-title-${locale}`}>{en ? 'Your next discovery starts here.' : 'Encuentra una ruta para explorar.'}</h2>
+    <p class="search-intro">{en ? 'Explore stories, practical information and ways to learn more about primates.' : 'Explora información, descubre el mundo de los primates y encuentra cómo seguir aprendiendo.'}</p>
+  </div>
+  <div class="search-workspace">
+    <label class="visually-hidden" for={`site-search-${locale}`}>{label}</label>
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <input id={`site-search-${locale}`} class="search-input" type="search" placeholder={placeholder} autocomplete="off" data-search-input />
+      <span class="search-key-hint" aria-hidden="true">⌕</span>
+    </div>
+    <div class="search-suggestions" aria-label={en ? 'Suggested searches' : 'اقتراحات للبحث'}>
+      <span class="search-suggestions-label">{en ? 'Explore by topic' : 'استكشف حسب الموضوع'}</span>
+      {suggestions.map((item) => <button type="button" class="search-chip" data-search-suggestion={item.query}>{item.label}<span aria-hidden="true">↗</span></button>)}
+    </div>
+    <div class="search-results-heading"><span>{en ? 'Explore the pages' : 'صفحات يمكنك استكشافها'}</span><span class="search-count" data-search-count aria-live="polite">{en ? `${list.length} destinations` : `${list.length} وجهة للاستكشاف`}</span></div>
+    <div class="search-results" data-search-results>
+      {list.map((item, index) => <a href={item.href} data-search-item data-search-text={`${item.title} ${item.summary}`} class="search-result-card">
+        <span class="search-result-number">{String(index + 1).padStart(2, '0')}</span>
+        <span class="search-result-copy"><strong>{item.title}</strong><span>{item.summary}</span></span>
+        <span class="search-result-arrow" aria-hidden="true">↗</span>
+      </a>)}
+    </div>
+    <p class="empty-state search-empty" data-search-empty role="status" hidden>{en ? 'No pages found. Try a broader keyword or choose a topic above.' : 'No encontramos páginas con ese término. Prueba otra palabra o elige un tema.'}</p>
+  </div>
 </section>
 <script is:inline>
-  const input = document.querySelector('[data-search-input]');
-  const items = [...document.querySelectorAll('[data-search-item]')];
-  const empty = document.querySelector('[data-search-empty]');
-  input?.addEventListener('input', (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLInputElement)) return;
-    const q = target.value.toLocaleLowerCase().trim();
-    let shown = 0;
-    items.forEach((item) => {
-      const text = item.getAttribute('data-search-text')?.toLocaleLowerCase() || '';
-      const visible = !q || text.includes(q);
-      if (item instanceof HTMLElement) item.hidden = !visible;
-      if (visible) shown++;
-    });
-    if (empty instanceof HTMLElement) empty.hidden = shown !== 0;
+  document.querySelectorAll('[data-search-panel]').forEach((root) => {
+    if (!(root instanceof HTMLElement) || root.dataset.searchReady === 'true') return;
+    root.dataset.searchReady = 'true';
+    const input = root.querySelector('[data-search-input]');
+    const items = Array.from(root.querySelectorAll('[data-search-item]')).filter((item) => item instanceof HTMLElement);
+    const empty = root.querySelector('[data-search-empty]');
+    const count = root.querySelector('[data-search-count]');
+    const en = root.getAttribute('data-locale') === 'en';
+    const normalize = (value) => value.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    const update = (raw) => {
+      const q = normalize(raw);
+      let shown = 0;
+      items.forEach((item) => {
+        const text = normalize(item.getAttribute('data-search-text') || '');
+        const visible = !q || text.includes(q);
+        item.hidden = !visible;
+        if (visible) shown++;
+      });
+      if (empty instanceof HTMLElement) empty.hidden = shown !== 0;
+      if (count) count.textContent = en ? (shown === 1 ? '1 destination' : shown + ' destinations') : (shown + ' páginas para explorar');
+    };
+    if (input instanceof HTMLInputElement) input.addEventListener('input', () => update(input.value));
+    root.querySelectorAll('[data-search-suggestion]').forEach((button) => button.addEventListener('click', () => {
+      if (!(input instanceof HTMLInputElement)) return;
+      input.value = button.getAttribute('data-search-suggestion') || '';
+      update(input.value);
+      input.focus();
+    }));
   });
 </script>
