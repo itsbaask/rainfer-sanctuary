@@ -2,7 +2,9 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import { resolve, relative, extname, join, sep } from 'node:path';
 
 const root = resolve('dist');
+/** @type {string[]} */
 const files = [];
+/** @param {string} dir */
 async function walk(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
