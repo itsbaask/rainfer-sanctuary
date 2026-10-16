@@ -10,6 +10,7 @@
     "check": "astro check",
     "preview": "astro preview --host 0.0.0.0 --port 3000",
     "audit:links": "node scripts/check-links.mjs",
+    "audit:build": "node scripts/check-build.mjs",
     "audit:i18n": "node scripts/check-i18n.mjs"
   },
   "dependencies": {
