@@ -48,12 +48,12 @@ import { legacyPages } from './mirror';
 export const allPages: Page[] = [...pages, ...legacyPages];
 
 export const navItems = [
-  { href: '/es/el-centro', es: 'El centro', en: 'The sanctuary' },
-  { href: '/es/que-hacemos', es: 'Qué hacemos', en: 'What we do' },
-  { href: '/es/los-primates-2', es: 'Los primates', en: 'The primates' },
-  { href: '/es/visitanos', es: 'Visítanos', en: 'Visit us' },
-  { href: '/es/que-puedes-hacer-tu', es: 'Ayuda', en: 'Help' },
-  { href: '/es/impacto', es: 'Impacto', en: 'Impact' },
+  { href: '/es/el-centro', enHref: '/en/about', es: 'El centro', en: 'The sanctuary' },
+  { href: '/es/que-hacemos', enHref: '/en/what-we-do', es: 'Qué hacemos', en: 'What we do' },
+  { href: '/es/los-primates-2', enHref: '/en/primates', es: 'Los primates', en: 'The primates' },
+  { href: '/es/visitanos', enHref: '/en/visit', es: 'Visítanos', en: 'Visit us' },
+  { href: '/es/que-puedes-hacer-tu', enHref: '/en/support-us', es: 'Ayuda', en: 'Help' },
+  { href: '/es/impacto', enHref: '/en/impact', es: 'Impacto', en: 'Impact' },
 ];
 
 export function pageFor(path: string, locale: Locale): Page | undefined {
