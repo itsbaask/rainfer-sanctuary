@@ -1,0 +1,133 @@
+---
+import type { Locale } from '../content/site';
+const { locale = 'en' } = Astro.props as { locale: Locale };
+const en = locale === 'en';
+---
+<section class="visit-planner" aria-labelledby="visit-map-title" data-visit-planner data-locale={locale}>
+  <div class="visit-planner-intro">
+    <p class="kicker">{en ? 'PLAN YOUR JOURNEY' : 'PLANIFICA TU VISITA'}</p>
+    <h2 id="visit-map-title">{en ? 'Find your way to the Rainfer area.' : 'Encuentra tu camino hacia la zona de Rainfer.'}</h2>
+    <p>{en ? 'Enter your starting point to see an interactive route and an approximate driving distance to the public reference town, Fuente el Saz de Jarama.' : 'Introduce tu punto de partida para ver una ruta interactiva y una distancia aproximada en coche hasta la localidad de referencia pública, Fuente el Saz de Jarama.'}</p>
+  </div>
+  <div class="visit-map-layout">
+    <div class="visit-map-card">
+      <div class="visit-map-toolbar">
+        <span class="visit-map-live"><span></span>{en ? 'INTERACTIVE MAP' : 'MAPA INTERACTIVO'}</span>
+        <span class="visit-map-region">{en ? 'North of Madrid, Spain' : 'Norte de Madrid, España'}</span>
+      </div>
+      <div class="visit-map" data-visit-map role="application" aria-label={en ? 'Interactive map of the northern Madrid area' : 'Mapa interactivo de la zona norte de Madrid'}>
+        <div class="visit-map-loading" data-map-loading>{en ? 'Loading map…' : 'Cargando mapa…'}</div>
+      </div>
+      <div class="visit-map-legend"><span class="visit-legend-dot visit-legend-origin"></span>{en ? 'Your starting point' : 'Tu punto de partida'}<span class="visit-legend-dot visit-legend-region"></span>{en ? 'Public reference area' : 'Zona pública de referencia'}</div>
+    </div>
+    <aside class="visit-route-panel">
+      <div class="visit-route-heading"><span class="visit-route-icon" aria-hidden="true">↗</span><div><p class="kicker">{en ? 'YOUR ROUTE' : 'TU RUTA'}</p><h3>{en ? 'Where are you travelling from?' : '¿Desde dónde vienes?'}</h3></div></div>
+      <form class="visit-route-form" data-route-form>
+        <label for={`visit-origin-${locale}`}>{en ? 'Starting point' : 'Punto de partida'}</label>
+        <div class="visit-origin-field"><input id={`visit-origin-${locale}`} name="origin" type="text" autocomplete="street-address" placeholder={en ? 'City, postcode or address' : 'Ciudad, código postal o dirección'} required /><button type="button" data-use-location aria-label={en ? 'Use my current location' : 'Usar mi ubicación actual'} title={en ? 'Use my current location' : 'Usar mi ubicación actual'}>◎</button></div>
+        <button class="button button-dark visit-route-submit" type="submit">{en ? 'Calculate route' : 'Calcular ruta'} <span aria-hidden="true">↗</span></button>
+        <p class="visit-route-feedback" data-route-feedback role="status" aria-live="polite">{en ? 'Type a place or use your current location.' : 'Escribe un lugar o utiliza tu ubicación actual.'}</p>
+      </form>
+      <div class="visit-route-result" data-route-result hidden>
+        <div class="visit-route-stats"><div><span>{en ? 'DRIVING DISTANCE' : 'DISTANCIA EN COCHE'}</span><strong data-route-distance>—</strong></div><div><span>{en ? 'ESTIMATED TIME' : 'TIEMPO ESTIMADO'}</span><strong data-route-duration>—</strong></div></div>
+        <a class="text-link" data-route-open target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/">{en ? 'Open route in maps' : 'Abrir ruta en mapas'} ↗</a>
+      </div>
+      <div class="visit-safety-note"><span aria-hidden="true">ⓘ</span><p>{en ? 'For the primates’ safety, Rainfer does not publish the sanctuary’s exact address. This route ends at the public reference area, not at the sanctuary. The exact directions are sent after your visit request is confirmed.' : 'Por seguridad de los primates, Rainfer no publica la dirección exacta del santuario. Esta ruta termina en la zona pública de referencia, no en el santuario. Las indicaciones exactas se envían cuando se confirma la visita.'}</p></div>
+      <a class="visit-official-link" href="https://rainfer.org/visitanos/visitas-guiadas/" target="_blank" rel="noopener noreferrer">{en ? 'Request and confirm your visit on the official website' : 'Solicita y confirma tu visita en la web oficial'} <span aria-hidden="true">↗</span></a>
+    </aside>
+  </div>
+  <p class="visit-map-credit">{en ? 'Map data © OpenStreetMap contributors · Route estimates depend on the selected starting point and available map services.' : 'Datos del mapa © colaboradores de OpenStreetMap · Las estimaciones dependen del punto de partida y de los servicios cartográficos disponibles.'}</p>
+</section>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous" />
+<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<script is:inline>
+  document.querySelectorAll('[data-visit-planner]').forEach((root) => {
+    if (!(root instanceof HTMLElement) || root.dataset.ready === 'true') return;
+    root.dataset.ready = 'true';
+    const en = root.dataset.locale === 'en';
+    const mapElement = root.querySelector('[data-visit-map]');
+    const loading = root.querySelector('[data-map-loading]');
+    const form = root.querySelector('[data-route-form]');
+    const input = root.querySelector('[name="origin"]');
+    const feedback = root.querySelector('[data-route-feedback]');
+    const result = root.querySelector('[data-route-result]');
+    const distanceEl = root.querySelector('[data-route-distance]');
+    const durationEl = root.querySelector('[data-route-duration]');
+    const routeLink = root.querySelector('[data-route-open]');
+    const locationButton = root.querySelector('[data-use-location]');
+    const destination = { lat: 40.6333, lon: -3.5117 };
+    let map;
+    let originMarker;
+    let routeLayer;
+    let originPoint;
+    const say = (message) => { if (feedback) feedback.textContent = message; };
+    const initMap = () => {
+      if (map || !mapElement || !window.L) return;
+      map = window.L.map(mapElement, { scrollWheelZoom: false }).setView([40.61, -3.57], 10);
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
+      }).addTo(map);
+      const regionIcon = window.L.divIcon({ className: 'visit-region-pin-wrap', html: '<span class="visit-region-pin"></span>', iconSize: [24, 24], iconAnchor: [12, 12] });
+      window.L.marker([destination.lat, destination.lon], { icon: regionIcon }).addTo(map).bindPopup(en ? 'Fuente el Saz de Jarama — public reference area, not the sanctuary' : 'Fuente el Saz de Jarama — zona pública de referencia, no el santuario');
+      if (loading) loading.remove();
+    };
+    const waitForMap = () => new Promise((resolve, reject) => {
+      let attempts = 0;
+      const check = () => {
+        if (window.L) { initMap(); resolve(true); return; }
+        attempts += 1;
+        if (attempts > 40) { reject(new Error(en ? 'The map could not load. Check your connection and try again.' : 'No se pudo cargar el mapa. Comprueba tu conexión e inténtalo de nuevo.')); return; }
+        window.setTimeout(check, 150);
+      };
+      check();
+    });
+    const showRoute = async (lat, lon, label) => {
+      await waitForMap();
+      originPoint = { lat, lon, label };
+      say(en ? 'Calculating the approximate route…' : 'Calculando la ruta aproximada…');
+      const url = 'https://router.project-osrm.org/route/v1/driving/' + lon + ',' + lat + ';' + destination.lon + ',' + destination.lat + '?overview=full&geometries=geojson';
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(en ? 'The route service is temporarily unavailable.' : 'El servicio de rutas no está disponible temporalmente.');
+      const data = await response.json();
+      if (!data.routes || !data.routes[0]) throw new Error(en ? 'No route was found for that starting point.' : 'No se encontró una ruta desde ese punto.');
+      const route = data.routes[0];
+      if (routeLayer) routeLayer.remove();
+      routeLayer = window.L.geoJSON(route.geometry, { style: { color: '#b76e4c', weight: 5, opacity: .88, lineCap: 'round', lineJoin: 'round' } }).addTo(map);
+      const originIcon = window.L.divIcon({ className: 'visit-origin-pin-wrap', html: '<span class="visit-origin-pin"></span>', iconSize: [22, 22], iconAnchor: [11, 11] });
+      if (originMarker) originMarker.remove();
+      originMarker = window.L.marker([lat, lon], { icon: originIcon }).addTo(map).bindPopup(label || (en ? 'Your starting point' : 'Tu punto de partida'));
+      map.fitBounds(routeLayer.getBounds(), { padding: [35, 35], maxZoom: 12 });
+      if (distanceEl) distanceEl.textContent = (route.distance / 1000).toLocaleString(en ? 'en-GB' : 'es-ES', { maximumFractionDigits: 1 }) + ' km';
+      if (durationEl) {
+        const minutes = Math.round(route.duration / 60);
+        durationEl.textContent = minutes >= 60 ? Math.floor(minutes / 60) + ' h ' + (minutes % 60 ? (minutes % 60) + ' min' : '') : minutes + ' min';
+      }
+      if (result instanceof HTMLElement) result.hidden = false;
+      if (routeLink instanceof HTMLAnchorElement) routeLink.href = 'https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=' + lat + '%2C' + lon + '%3B' + destination.lat + '%2C' + destination.lon;
+      say(en ? 'Approximate route to the public reference area calculated.' : 'Ruta aproximada hasta la zona pública de referencia calculada.');
+    };
+    if (form instanceof HTMLFormElement) form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const query = input instanceof HTMLInputElement ? input.value.trim() : '';
+      if (!query) return;
+      say(en ? 'Finding your starting point…' : 'Buscando tu punto de partida…');
+      try {
+        const response = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=' + encodeURIComponent(query));
+        const places = await response.json();
+        if (!places.length) throw new Error(en ? 'Place not found. Try a nearby city or postcode.' : 'No encontramos ese lugar. Prueba con una ciudad o código postal cercano.');
+        await showRoute(Number(places[0].lat), Number(places[0].lon), places[0].display_name);
+      } catch (error) { say(error instanceof Error ? error.message : (en ? 'Something went wrong. Please try again.' : 'Algo salió mal. Inténtalo de nuevo.')); }
+    });
+    if (locationButton instanceof HTMLButtonElement) locationButton.addEventListener('click', async () => {
+      if (!navigator.geolocation) { say(en ? 'Location is not available in this browser. Enter a place instead.' : 'La ubicación no está disponible en este navegador. Escribe un lugar.'); return; }
+      say(en ? 'Requesting your location…' : 'Solicitando tu ubicación…');
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        if (input instanceof HTMLInputElement) input.value = en ? 'My current location' : 'Mi ubicación actual';
+        try { await showRoute(position.coords.latitude, position.coords.longitude, en ? 'Your current location' : 'Tu ubicación actual'); }
+        catch (error) { say(error instanceof Error ? error.message : (en ? 'Could not calculate the route.' : 'No se pudo calcular la ruta.')); }
+      }, () => say(en ? 'Location permission was denied. Enter a city or postcode instead.' : 'No se concedió permiso de ubicación. Escribe una ciudad o código postal.'), { enableHighAccuracy: false, timeout: 10000 });
+    });
+    waitForMap().catch((error) => { if (loading) loading.textContent = error.message; say(error.message); });
+  });
+</script>
