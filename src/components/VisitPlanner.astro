@@ -87,7 +87,6 @@ const en = locale === 'en';
     /** @param {number} lat @param {number} lon @param {string} label */
     const showRoute = async (lat, lon, label) => {
       await waitForMap();
-      originPoint = { lat, lon, label };
       say(en ? 'Calculating the approximate route…' : 'Calculando la ruta aproximada…');
       const url = 'https://router.project-osrm.org/route/v1/driving/' + lon + ',' + lat + ';' + destination.lon + ',' + destination.lat + '?overview=full&geometries=geojson';
       const response = await fetch(url);
