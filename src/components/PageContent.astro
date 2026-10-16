@@ -11,8 +11,8 @@ const cards = page.cards || [];
 const workPath = locale === 'es' ? '/es/que-hacemos' : '/en/what-we-do';
 const localizeCardHref = (href?: string) => {
   if (!href) return undefined;
-  if (/^https?:\\/\\//i.test(href) || locale === 'es') return href;
-  const sourcePath = href.replace(/^\\/es\\//, '').replace(/\\/$/, '');
+  if (/^https?:\/\//i.test(href) || locale === 'es') return href;
+  const sourcePath = href.replace(/^\/es\//, '').replace(/\/$/, '');
   const target = allPages.find((candidate) => candidate.path === sourcePath);
   return target?.enPath ? localizedPath(target, 'en') : undefined;
 };
