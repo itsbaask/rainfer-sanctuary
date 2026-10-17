@@ -21,7 +21,7 @@ export function getStaticPaths() {
         .replace(/\\.html$/i, '')
         .replace(/^\\/+|\\/+$/g, '');
       const isNonPageEndpoint = /(^|\\/)(wp-content|wp-admin|wp-json|author|comments|feed)(\\/|$)/i.test(alias) || /(^|\\/)feed$/i.test(alias);
-      if (alias && !isNonPageEndpoint && !spanishPaths.has(alias) && !aliases.has(alias)) {
+      if (alias && !/[?#]/.test(alias) && alias !== 'index.html' && !isNonPageEndpoint && !spanishPaths.has(alias) && !aliases.has(alias)) {
         aliases.add(alias);
         paths.push({ params: { slug: `es/${alias}` }, props: { locale: 'es' as Locale, page } });
       }
