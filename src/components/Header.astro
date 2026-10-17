@@ -20,7 +20,16 @@ const langPath = currentPage && (other === 'es' || currentPage.enPath) ? localiz
         const active = Astro.url.pathname === href || Astro.url.pathname.startsWith(`${href}/`);
         return <a href={href} class={active ? 'active' : undefined} aria-current={active ? 'page' : undefined}>{item[locale]}</a>;
       })}
-      <a class="language-link" href={langPath} lang={other} aria-label={locale === 'es' ? 'View this page in English' : 'Ver esta página en español'}>{other.toUpperCase()}</a>
+      <label class="language-picker-label" for="site-language">{locale === 'es' ? 'Idioma' : 'Language'}</label>
+      <select class="language-picker" id="site-language" aria-label={locale === 'es' ? 'Elegir idioma' : 'Choose language'} data-language-picker>
+        <option value="es">Español</option>
+        <option value="en">English</option>
+        <option value="zh-CN">中文</option>
+        <option value="hi">हिन्दी</option>
+        <option value="ar">العربية</option>
+        <option value="fr">Français</option>
+        <option value="pt">Português</option>
+      </select>
     </nav>
   </div>
 </header>
