@@ -48,6 +48,7 @@ import { legacyPages } from './mirror';
 export const allPages: Page[] = [...pages, ...legacyPages];
 
 export const navItems = [
+  { href: '/es', enHref: '/en', es: 'Inicio', en: 'Home' },
   { href: '/es/el-centro', enHref: '/en/about', es: 'El centro', en: 'The sanctuary' },
   { href: '/es/que-hacemos', enHref: '/en/what-we-do', es: 'Qué hacemos', en: 'What we do' },
   { href: '/es/los-primates-2', enHref: '/en/primates', es: 'Los primates', en: 'The primates' },
