@@ -77,8 +77,8 @@ const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', n
       window.googleTranslateElementInit = function () {
         if (window.google?.translate?.TranslateElement) {
           new window.google.translate.TranslateElement({
-            pageLanguage: 'es',
-            includedLanguages: 'en,zh-CN,hi,ar,fr,pt,ru,de',
+            pageLanguage: document.documentElement.lang || 'es',
+            includedLanguages: 'es,en,zh-CN,hi,ar,fr,pt,ru,de',
             autoDisplay: false
           }, 'google_translate_element');
         }
