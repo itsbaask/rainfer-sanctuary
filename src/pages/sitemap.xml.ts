@@ -2,7 +2,17 @@ import type { APIRoute } from 'astro';
 import { allPages } from '../content/site';
 
 const origin = (import.meta.env.PUBLIC_SITE_URL || 'https://rainfer.org').replace(/\/$/, '');
-const paths = ['/', '/es', '/en', ...allPages.map((page) => `/es/${page.path}`), ...allPages.filter((page) => page.enPath).map((page) => `/en/${page.enPath}`)];
+const canonicalSpanish = new Set(allPages.map((page) => page.path.replace(/^\/+|\/+$/g, '')));
+const legacyAliases = allPages.flatMap((page) => {
+  if (!page.sourceFile) return [];
+  const alias = page.sourceFile
+    .replace(/\/index\.html$/i, '')
+    .replace(/\.html$/i, '')
+    .replace(/^\/+|\/+$/g, '');
+  const isNonPageEndpoint = /(^|\/)(wp-content|wp-admin|wp-json|author|comments|feed)(\/|$)/i.test(alias) || /(^|\/)feed$/i.test(alias);
+  return alias && !isNonPageEndpoint && !canonicalSpanish.has(alias) ? [`/es/${alias}`] : [];
+});
+const paths = ['/', '/es', '/en', ...allPages.map((page) => `/es/${page.path}`), ...allPages.filter((page) => page.enPath).map((page) => `/en/${page.enPath}`), ...legacyAliases];
 const unique = [...new Set(paths)];
 
 export const GET: APIRoute = () => {
