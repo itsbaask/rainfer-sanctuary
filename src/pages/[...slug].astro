@@ -10,8 +10,8 @@ export function getStaticPaths() {
   const spanishPaths = new Set(allPages.map((page) => page.path.replace(/^\/+|\/+$/g, '')));
   const aliases = new Set<string>();
   for (const page of allPages) {
-    paths.push({ params: { slug: \`es/\${page.path}\` }, props: { locale: 'es' as Locale, page } });
-    if (page.enPath) paths.push({ params: { slug: \`en/\${page.enPath}\` }, props: { locale: 'en' as Locale, page } });
+    paths.push({ params: { slug: 'es/' + page.path }, props: { locale: 'es' as Locale, page } });
+    if (page.enPath) paths.push({ params: { slug: 'en/' + page.enPath }, props: { locale: 'en' as Locale, page } });
 
     // Recreate clean legacy URLs from archived source-file paths when they do not
     // collide with a current canonical page. Ignore WordPress/feed endpoints.
@@ -23,7 +23,7 @@ export function getStaticPaths() {
       const isNonPageEndpoint = /(^|\/)(wp-content|wp-admin|wp-json|author|comments|feed)(\/|$)/i.test(alias) || /(^|\/)feed$/i.test(alias);
       if (alias && !/[?#]/.test(alias) && alias !== 'index.html' && !isNonPageEndpoint && !spanishPaths.has(alias) && !aliases.has(alias)) {
         aliases.add(alias);
-        paths.push({ params: { slug: \`es/\${alias}\` }, props: { locale: 'es' as Locale, page } });
+        paths.push({ params: { slug: 'es/' + alias }, props: { locale: 'es' as Locale, page } });
       }
     }
   }
