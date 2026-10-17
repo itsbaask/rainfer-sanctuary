@@ -1,0 +1,28 @@
+---
+import type { Locale } from '../content/site';
+const { locale = 'es' } = Astro.props as { locale: Locale };
+const isEs = locale === 'es';
+const partners = [
+  { name: 'Fundación Ochotumbao', url: 'https://www.ochotumbao.org/', domain: 'ochotumbao.org', note: isEs ? 'Fundación solidaria' : 'Charitable foundation' },
+  { name: 'Escuela Europea de Oratoria', url: 'https://www.escueladeoratoria.com/', domain: 'escueladeoratoria.com', note: isEs ? 'Educación y comunicación' : 'Education and communication' },
+  { name: 'LUSH', url: 'https://www.lush.com/es/es', domain: 'lush.com', note: isEs ? 'Cosmética ética' : 'Ethical cosmetics' },
+  { name: 'FAADA', url: 'https://www.faada.org/', domain: 'faada.org', note: isEs ? 'Defensa de los animales' : 'Animal protection' },
+  { name: 'Fundación DVESTA', url: 'https://dvesta.org/', domain: 'dvesta.org', note: isEs ? 'Ecología, sociedad y cultura' : 'Ecology, society and culture' },
+  { name: 'Scheinberg Relief Fund', url: 'https://www.thescheinbergfoundation.org/', domain: 'thescheinbergfoundation.org', note: isEs ? 'Iniciativa filantrópica' : 'Philanthropic initiative' },
+];
+---
+<section class="partners-section" aria-labelledby="partners-title">
+  <div class="partners-heading">
+    <p class="kicker">{isEs ? 'Una misión compartida' : 'A shared mission'}</p>
+    <h2 id="partners-title">{isEs ? 'Colaboradores que ayudan a impulsar el cambio.' : 'Partners helping move change forward.'}</h2>
+    <p>{isEs ? 'Organizaciones y empresas que aparecen como colaboradoras en la información facilitada por Rainfer. Visita sus webs para conocer su trabajo.' : 'Organisations and companies listed as collaborators in the supplied Rainfer material. Visit their websites to learn about their work.'}</p>
+  </div>
+  <div class="partners-grid">
+    {partners.map((partner) => <a class="partner-card" href={partner.url} target="_blank" rel="noopener noreferrer" aria-label={`${partner.name} — ${partner.url}`}>
+      <span class="partner-logo-frame"><img src={`https://www.google.com/s2/favicons?domain=${partner.domain}&sz=128`} alt={`${partner.name} logo`} loading="lazy" width="64" height="64" /></span>
+      <span class="partner-name">{partner.name}</span>
+      <span class="partner-note">{partner.note}</span>
+      <span class="partner-visit">{isEs ? 'Visitar sitio oficial' : 'Visit official website'} ↗</span>
+    </a>)}
+  </div>
+</section>
