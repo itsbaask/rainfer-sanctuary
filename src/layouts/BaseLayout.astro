@@ -63,6 +63,28 @@ const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', n
       menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
       document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMenu(); });
       document.querySelectorAll('[data-accordion]').forEach((item) => item.addEventListener('click', () => item.toggleAttribute('open')));
+      document.querySelectorAll('[data-language-picker]').forEach((picker) => {
+        picker.addEventListener('change', (event) => {
+          const select = event.currentTarget;
+          if (!(select instanceof HTMLSelectElement)) return;
+          const translated = document.querySelector('.goog-te-combo');
+          if (translated instanceof HTMLSelectElement) {
+            translated.value = select.value;
+            translated.dispatchEvent(new Event('change'));
+          }
+        });
+      });
+      window.googleTranslateElementInit = function () {
+        if (window.google?.translate?.TranslateElement) {
+          new window.google.translate.TranslateElement({
+            pageLanguage: 'es',
+            includedLanguages: 'en,zh-CN,hi,ar,fr,pt',
+            autoDisplay: false
+          }, 'google_translate_element');
+        }
+      };
     </script>
+    <div id="google_translate_element" class="google-translate-host" aria-hidden="true"></div>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
   </body>
 </html>
