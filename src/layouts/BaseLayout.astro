@@ -74,9 +74,10 @@ const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', n
           }
         });
       });
-      window.googleTranslateElementInit = function () {
-        if (window.google?.translate?.TranslateElement) {
-          new window.google.translate.TranslateElement({
+      (window as any).googleTranslateElementInit = function () {
+        const translate = (window as any).google?.translate;
+        if (translate?.TranslateElement) {
+          new translate.TranslateElement({
             pageLanguage: document.documentElement.lang || 'es',
             includedLanguages: 'es,en,zh-CN,hi,ar,fr,pt,ru,de',
             autoDisplay: false
