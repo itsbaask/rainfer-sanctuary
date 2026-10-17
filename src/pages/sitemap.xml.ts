@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { allPages } from '../content/site';
 
-const origin = (import.meta.env.PUBLIC_SITE_URL || 'https://rainfer.org').replace(/\/$/, '');
+const origin = (import.meta.env.PUBLIC_SITE_URL || 'https://itsbaask.github.io/rainfer-sanctuary').replace(/\/$/, '');
 const canonicalSpanish = new Set(allPages.map((page) => page.path.replace(/^\/+|\/+$/g, '')));
 const legacyAliases = allPages.flatMap((page) => {
   if (!page.sourceFile) return [];
