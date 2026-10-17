@@ -7,6 +7,11 @@ const copy = ui[locale];
 const title = locale === 'es' ? page.title : page.enTitle;
 const eyebrow = locale === 'es' ? page.eyebrow : page.enEyebrow;
 const summary = locale === 'es' ? page.summary : page.enSummary;
+const statusLabel = page.status === 'missing-info'
+  ? (locale === 'es' ? 'Información pendiente de verificar con Rainfer' : 'Information awaiting verification with Rainfer')
+  : page.status === 'mapped'
+    ? (locale === 'es' ? 'Contenido archivado; puede estar incompleto' : 'Archived content; it may be incomplete')
+    : (locale === 'es' ? 'Reconstrucción informativa; confirma los datos operativos' : 'Informational reconstruction; confirm operational details');
 const body = locale === 'es' ? page.body : page.enBody;
 const cards = page.cards || [];
 const workPath = locale === 'es' ? '/es/que-hacemos' : '/en/what-we-do';
@@ -27,7 +32,7 @@ const formSuccess = locale === 'es' ? 'Consulta validada localmente. No se ha en
     <a href={`/${locale}`}>{copy.breadcrumbHome}</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span>
   </nav>
   <section class="page-hero page-hero-split" aria-labelledby="page-title">
-    <div><p class="kicker">{eyebrow}</p><h1 id="page-title">{title}</h1><p class="lede">{summary}</p><span class="verified">{copy.status}</span></div>
+    <div><p class="kicker">{eyebrow}</p><h1 id="page-title">{title}</h1><p class="lede">{summary}</p><span class="verified">{statusLabel}</span></div>
     {page.image && <img src={page.image} alt="" width="1200" height="900" loading="eager" />}
   </section>
   {page.kind === "visit" && page.path === "visitanos" && <VisitPlanner locale={locale} />}
