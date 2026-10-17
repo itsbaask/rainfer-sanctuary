@@ -11,7 +11,7 @@ const canonical = origin && path ? `${origin}${path.startsWith('/') ? path : `/$
 const absoluteImage = /^https?:\/\//i.test(image) ? image : origin ? `${origin}${image.startsWith('/') ? image : `/${image}`}` : image;
 const copy = ui[locale];
 const legacyQueryMap = Object.fromEntries(allPages.flatMap((page) => {
-  const match = page.sourceFile?.match(/^index\.html\?p=(\d+)$/i);
+  const match = page.sourceFile?.match(/^index\.html\?p=(\d+)(?:\.html)?$/i);
   return match ? [[match[1], page.path]] : [];
 }));
 const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, inLanguage: locale, ...(canonical ? { url: canonical } : {}), isPartOf: { '@type': 'WebSite', name: 'Rainfer — informational reconstruction', ...(origin ? { url: origin } : {}) } };
