@@ -10,7 +10,7 @@ const legacyAliases = allPages.flatMap((page) => {
     .replace(/\.html$/i, '')
     .replace(/^\/+|\/+$/g, '');
   const isNonPageEndpoint = /(^|\/)(wp-content|wp-admin|wp-json|author|comments|feed)(\/|$)/i.test(alias) || /(^|\/)feed$/i.test(alias);
-  return alias && !isNonPageEndpoint && !canonicalSpanish.has(alias) ? [`/es/${alias}`] : [];
+  return alias && !/[?#]/.test(alias) && alias !== 'index.html' && !isNonPageEndpoint && !canonicalSpanish.has(alias) ? [`/es/${alias}`] : [];
 });
 const paths = ['/', '/es', '/en', ...allPages.map((page) => `/es/${page.path}`), ...allPages.filter((page) => page.enPath).map((page) => `/en/${page.enPath}`), ...legacyAliases];
 const unique = [...new Set(paths)];
