@@ -12,7 +12,7 @@ const langPath = currentPage && (other === 'es' || currentPage.enPath) ? localiz
 <header class="site-header">
   <div class="notice"><span>RAINFER</span><span>{locale === 'es' ? 'Rescate · bienestar · educación' : 'Rescue · welfare · education'}</span></div>
   <div class="nav-wrap">
-    <a class="wordmark" href={`/${locale}`} aria-label={locale === 'es' ? 'Rainfer — inicio' : 'Rainfer — home'}>Rainfer<span class="wordmark-mark" aria-hidden="true">/</span></a>
+    <a class="wordmark" href={locale === 'es' ? '/' : '/en'} aria-label={locale === 'es' ? 'Rainfer — inicio' : 'Rainfer — home'}>Rainfer<span class="wordmark-mark" aria-hidden="true">/</span></a>
     <button class="menu-button" type="button" data-menu-button data-open-label={copy.menu} data-close-label={copy.close} aria-expanded="false" aria-controls="site-menu">{copy.menu}</button>
     <nav id="site-menu" class="site-nav" data-menu aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}>
       {navItems.map((item) => {
