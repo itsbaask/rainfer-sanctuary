@@ -34,27 +34,34 @@ jobs:
         run: pnpm audit:i18n
       - run: pnpm build
         env:
-          PUBLIC_SITE_URL: https://itsbaask.github.io/rainfer-sanctuary
+          PUBLIC_SITE_URL: https://rainfer.jo3.org
       - name: Audit generated pages and local assets
         run: pnpm audit:build
       - name: Fix root-relative paths for project Pages URL
+        env:
+          PUBLIC_SITE_URL: https://rainfer.jo3.org
         run: |
           python3 - <<'PY'
+          import os
           from pathlib import Path
-          prefix = "/rainfer-sanctuary"
-          for path in Path("dist").rglob("*"):
-              if not path.is_file() or path.suffix.lower() not in {".html", ".css", ".js", ".xml", ".json", ".webmanifest", ".txt"}:
-                  continue
-              try:
-                  data = path.read_text(encoding="utf-8")
-              except (UnicodeDecodeError, OSError):
-                  continue
-              for attr in ("href", "src", "action"):
-                  data = data.replace(f'{attr}="/', f'{attr}="{prefix}/')
-              data = data.replace('url(/', f'url({prefix}/')
-              data = data.replace('url("/', f'url("{prefix}/')
-              data = data.replace("url('/", f"url('{prefix}/")
-              path.write_text(data, encoding="utf-8")
+
+          # Project-site URLs need a repository prefix; custom domains serve at /.
+          site_url = os.environ.get("PUBLIC_SITE_URL", "").rstrip("/")
+          prefix = "/rainfer-sanctuary" if site_url == "https://itsbaask.github.io/rainfer-sanctuary" else ""
+          if prefix:
+              for path in Path("dist").rglob("*"):
+                  if not path.is_file() or path.suffix.lower() not in {".html", ".css", ".js", ".xml", ".json", ".webmanifest", ".txt"}:
+                      continue
+                  try:
+                      data = path.read_text(encoding="utf-8")
+                  except (UnicodeDecodeError, OSError):
+                      continue
+                  for attr in ("href", "src", "action"):
+                      data = data.replace(f'{attr}="/', f'{attr}="{prefix}/')
+                  data = data.replace("url(/", f"url({prefix}/")
+                  data = data.replace('url("/', f'url("{prefix}/')
+                  data = data.replace("url('/", f"url('{prefix}/")
+                  path.write_text(data, encoding="utf-8")
           PY
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
