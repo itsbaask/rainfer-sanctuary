@@ -365,3 +365,20 @@ button{cursor:pointer}
   .search-panel-heading h2{font-size:clamp(2rem,8cqi,2.65rem)}
   .search-field{min-width:0}
 }
+
+
+/* Collaborators / partners */
+.partners-section{background:var(--paper);padding:clamp(3.5rem,7vw,6.5rem) clamp(1.2rem,5vw,5rem);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.partners-heading{max-width:760px;margin:0 auto 2.4rem;text-align:center}
+.partners-heading h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3.5rem);line-height:1.08;letter-spacing:-.04em;margin:.4rem 0 1rem;color:var(--forest)}
+.partners-heading>p:last-child{color:var(--muted);max-width:650px;margin:0 auto;line-height:1.75}
+.partners-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;max-width:1180px;margin:0 auto}
+.partner-card{min-width:0;min-height:215px;padding:1.5rem 1.3rem;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:.75rem;border:1px solid var(--line);border-radius:1rem;background:#fff;color:var(--forest);text-decoration:none;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.partner-card:hover{transform:translateY(-3px);border-color:var(--forest);box-shadow:0 12px 32px rgba(23,63,53,.08)}
+.partner-logo-frame{width:76px;height:76px;border-radius:1rem;background:#f5f4ee;display:grid;place-items:center;overflow:hidden}
+.partner-logo-frame img{width:48px;height:48px;object-fit:contain}
+.partner-name{font-weight:750;font-size:1rem;line-height:1.35}
+.partner-note{font-size:.82rem;color:var(--muted)}
+.partner-visit{font-size:.74rem;font-weight:700;letter-spacing:.02em;margin-top:.2rem}
+@media(max-width:760px){.partners-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}.partner-card{min-height:190px;padding:1rem .7rem}.partner-name{font-size:.9rem}}
+@media(max-width:380px){.partners-grid{grid-template-columns:1fr}.partner-card{min-height:160px}}
