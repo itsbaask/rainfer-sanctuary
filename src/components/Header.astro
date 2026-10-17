@@ -4,10 +4,6 @@ import { navItems } from '../content/site';
 import { ui } from '../i18n/strings';
 const { locale = 'es' } = Astro.props as { locale: Locale };
 const copy = ui[locale];
-const other: Locale = locale === 'es' ? 'en' : 'es';
-const current = Astro.url.pathname.replace(/^\/(es|en)\/?/, '').replace(/\/$/, '');
-const currentPage = allPages.find((page) => locale === 'es' ? page.path === current : page.enPath === current);
-const langPath = currentPage && (other === 'es' || currentPage.enPath) ? localizedPath(currentPage, other) : `/${other}`;
 ---
 <header class="site-header">
   <div class="notice"><span>RAINFER</span><span>{locale === 'es' ? 'Rescate · bienestar · educación' : 'Rescue · welfare · education'}</span></div>
