@@ -346,3 +346,22 @@ button{cursor:pointer}
 .visit-region-pin{background:#173f35}
 @media(max-width:900px){.visit-map-layout{grid-template-columns:1fr}.visit-map{min-height:380px}.visit-route-panel{padding:1.5rem}}
 @media(max-width:560px){.visit-planner{margin-bottom:3rem;padding:3rem 0}.visit-map-toolbar{align-items:flex-start;flex-direction:column;gap:.35rem}.visit-map-region{text-align:left}.visit-map{min-height:330px}.visit-route-panel{padding:1.1rem}.visit-route-stats strong{font-size:1.2rem}}
+
+/* Search panel: respond to its actual column width, not only the viewport.
+   This prevents the two-column editorial layout from squeezing cards inside
+   nested layouts such as the homepage explore section. */
+.search-experience{container-type:inline-size;min-width:0}
+@container (max-width: 700px){
+  .search-experience{grid-template-columns:minmax(0,1fr);gap:1.6rem;padding:clamp(1.15rem,4cqi,2rem)}
+  .search-panel-heading{max-width:42rem;position:static}
+  .search-panel-heading h2{font-size:clamp(2.2rem,7cqi,3.2rem);max-width:12ch}
+  .search-mini-note{margin-top:1.2rem}
+  .search-results-heading{align-items:flex-start;flex-direction:column}
+}
+@container (max-width: 460px){
+  .search-experience .search-results{grid-template-columns:minmax(0,1fr);gap:.6rem}
+  .search-experience .search-results a.search-result-card{grid-template-columns:2.35rem minmax(0,1fr) 1rem;min-height:0;padding:.9rem}
+  .search-experience .search-results a.search-result-card:hover{padding:.9rem}
+  .search-panel-heading h2{font-size:clamp(2rem,8cqi,2.65rem)}
+  .search-field{min-width:0}
+}
