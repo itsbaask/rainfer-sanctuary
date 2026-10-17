@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import type { Locale } from '../content/site';
+import { allPages, type Locale } from '../content/site';
 import { ui } from '../i18n/strings';
 interface Props { locale?: Locale; title: string; description: string; image?: string; path?: string; noindex?: boolean; }
 const { locale = 'es', title, description, image = '/assets/hero.jpg', path = '', noindex = false } = Astro.props;
@@ -10,6 +10,10 @@ const origin = (import.meta.env.PUBLIC_SITE_URL || 'https://itsbaask.github.io/r
 const canonical = origin && path ? `${origin}${path.startsWith('/') ? path : `/${path}`}` : undefined;
 const absoluteImage = /^https?:\/\//i.test(image) ? image : origin ? `${origin}${image.startsWith('/') ? image : `/${image}`}` : image;
 const copy = ui[locale];
+const legacyQueryMap = Object.fromEntries(allPages.flatMap((page) => {
+  const match = page.sourceFile?.match(/^index\\.html\\?p=(\\d+)$/i);
+  return match ? [[match[1], page.path]] : [];
+}));
 const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, inLanguage: locale, ...(canonical ? { url: canonical } : {}), isPartOf: { '@type': 'WebSite', name: 'Rainfer — informational reconstruction', ...(origin ? { url: origin } : {}) } };
 ---
 <!doctype html>
@@ -47,7 +51,21 @@ const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', n
     <Header locale={locale} />
     <main id="main"><slot /></main>
     <Footer locale={locale} />
+    <script type="application/json" id="legacy-query-map" set:html={JSON.stringify(legacyQueryMap)}></script>
     <script is:inline>
+      // WordPress used query-based post URLs; redirect those old links to their archived local page.
+      const legacyMatch = window.location.pathname.match(/(?:^|\\/)index\\.html$/i);
+      const legacyId = new URLSearchParams(window.location.search).get('p');
+      const legacyMapNode = document.getElementById('legacy-query-map');
+      if (legacyMatch && legacyId && legacyMapNode) {
+        try {
+          const legacyMap = JSON.parse(legacyMapNode.textContent || '{}');
+          if (legacyMap[legacyId]) {
+            const prefix = window.location.pathname.startsWith('/rainfer-sanctuary/') ? '/rainfer-sanctuary' : '';
+            window.location.replace(prefix + '/es/' + legacyMap[legacyId]);
+          }
+        } catch (error) { console.warn('Could not resolve an archived legacy URL.', error); }
+      }
       const menu = document.querySelector('[data-menu]');
       const button = document.querySelector('[data-menu-button]');
       const closeMenu = () => {
