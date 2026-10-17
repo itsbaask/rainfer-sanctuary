@@ -11,7 +11,7 @@ const canonical = origin && path ? `${origin}${path.startsWith('/') ? path : `/$
 const absoluteImage = /^https?:\/\//i.test(image) ? image : origin ? `${origin}${image.startsWith('/') ? image : `/${image}`}` : image;
 const copy = ui[locale];
 const legacyQueryMap = Object.fromEntries(allPages.flatMap((page) => {
-  const match = page.sourceFile?.match(/^index\\.html\\?p=(\\d+)$/i);
+  const match = page.sourceFile?.match(/^index\.html\?p=(\d+)$/i);
   return match ? [[match[1], page.path]] : [];
 }));
 const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, inLanguage: locale, ...(canonical ? { url: canonical } : {}), isPartOf: { '@type': 'WebSite', name: 'Rainfer — informational reconstruction', ...(origin ? { url: origin } : {}) } };
@@ -54,7 +54,7 @@ const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', n
     <script type="application/json" id="legacy-query-map" set:html={JSON.stringify(legacyQueryMap)}></script>
     <script is:inline>
       // WordPress used query-based post URLs; redirect those old links to their archived local page.
-      const legacyMatch = window.location.pathname.match(/(?:^|\\/)index\\.html$/i);
+      const legacyMatch = window.location.pathname.match(/(?:^|\/)index\.html$/i);
       const legacyId = new URLSearchParams(window.location.search).get('p');
       const legacyMapNode = document.getElementById('legacy-query-map');
       if (legacyMatch && legacyId && legacyMapNode) {
