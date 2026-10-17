@@ -21,11 +21,11 @@ const isEnglishHome = Astro.params.slug === 'en';
 const isSpanishHome = Astro.params.slug === 'es';
 ---
 {isEnglishHome ? (
-  <BaseLayout locale="en" title="Rainfer — Rescue, welfare and education" description="Explore primate care, environmental education and responsible ways to support the work." path="/en/" image="/assets/hero.jpg">
+  <BaseLayout locale="en" title="Rainfer — Rescue, welfare and education" description="Explore primate care, environmental education and responsible ways to support the work." path="/en/" image="https://images.unsplash.com/photo-1655981652077-f5303843b81b?auto=format&fit=crop&w=1800&q=85">
     <EnglishHome />
   </BaseLayout>
 ) : isSpanishHome ? (
-  <BaseLayout locale="es" title="Rainfer — Rescate, bienestar y educación" description="Conoce Rainfer, su trabajo con primates, la educación ambiental y las formas de apoyar una cultura de cuidado." path="/es/" image="/assets/hero.jpg">
+  <BaseLayout locale="es" title="Rainfer — Rescate, bienestar y educación" description="Conoce Rainfer, su trabajo con primates, la educación ambiental y las formas de apoyar una cultura de cuidado." path="/es/" image="https://images.unsplash.com/photo-1652451160831-7311e014cd63?auto=format&fit=crop&w=1800&q=85">
     <SpanishHome />
   </BaseLayout>
 ) : (
