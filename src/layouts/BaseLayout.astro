@@ -21,6 +21,23 @@ const structuredData = { '@context': 'https://schema.org', '@type': 'WebPage', n
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      // Until GitHub Pages issues a certificate for the custom domain, route HTTP visitors
+      // to the known-valid HTTPS GitHub Pages hostname instead of leaving them on HTTP.
+      if (
+        window.location.protocol === 'http:' &&
+        ['rainfer.jo3.org', 'www.rainfer.jo3.org'].includes(window.location.hostname)
+      ) {
+        const projectPath = '/rainfer-sanctuary';
+        const requestedPath = window.location.pathname === '/'
+          ? projectPath + '/'
+          : projectPath + window.location.pathname;
+        window.location.replace(
+          'https://itsbaask.github.io' + requestedPath +
+          window.location.search + window.location.hash
+        );
+      }
+    </script>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#173f35" />
     <meta name="color-scheme" content="light" />
