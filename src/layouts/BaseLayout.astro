@@ -6,7 +6,7 @@ import type { Locale } from '../content/site';
 import { ui } from '../i18n/strings';
 interface Props { locale?: Locale; title: string; description: string; image?: string; path?: string; noindex?: boolean; }
 const { locale = 'es', title, description, image = '/assets/hero.jpg', path = '', noindex = false } = Astro.props;
-const origin = (import.meta.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');
+const origin = (import.meta.env.PUBLIC_SITE_URL || 'https://itsbaask.github.io/rainfer-sanctuary').replace(/\/$/, '');
 const canonical = origin && path ? `${origin}${path.startsWith('/') ? path : `/${path}`}` : undefined;
 const absoluteImage = /^https?:\/\//i.test(image) ? image : origin ? `${origin}${image.startsWith('/') ? image : `/${image}`}` : image;
 const copy = ui[locale];
